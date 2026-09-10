@@ -105,9 +105,17 @@
   .display-name{
     font-family:var(--font-display);
     font-weight:700;
-    font-size:32px;
-    letter-spacing:-0.4px;
+    font-size:25px;
+    letter-spacing:-0.3px;
     color:var(--text-primary);
+    max-width:230px;
+  }
+  .greeting-sub{
+    font-family:var(--font-body);
+    font-weight:500;
+    font-size:14.5px;
+    color:var(--text-secondary);
+    margin-top:4px;
   }
   .page-title{
     font-family:var(--font-display);
@@ -237,30 +245,31 @@
   }
   .hero-cta svg{width:17px;height:17px;}
 
-  /* ---------- Progress cards (horizontal scroll) ---------- */
-  .h-scroll{
-    display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;
-    scrollbar-width:none;margin:0 -20px;padding-left:20px;padding-right:20px;
+  /* ---------- Progress cards (two-up grid) ---------- */
+  .progress-grid{
+    display:flex;
+    gap:12px;
   }
-  .h-scroll::-webkit-scrollbar{display:none;}
   .progress-card{
-    flex-shrink:0;width:168px;
+    flex:1;
+    min-width:0;
   }
   .progress-name{
     font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);
-    margin-bottom:16px;
+    margin-bottom:14px;
   }
   .progress-bottom{display:flex;align-items:flex-end;justify-content:space-between;}
   .progress-value{display:flex;align-items:baseline;}
-  .progress-value .num{font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--text-primary);letter-spacing:-0.4px;}
-  .progress-value .unit{font-family:var(--font-body);font-size:14.5px;color:var(--text-tertiary);margin-left:3px;}
-  .progress-delta{display:flex;align-items:center;gap:3px;margin-top:4px;font-family:var(--font-body);font-weight:500;font-size:12px;}
-  .progress-delta svg{width:12px;height:12px;}
-  .delta-up{color:var(--success);}
+  .progress-value .num{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--text-primary);letter-spacing:-0.4px;}
+  .progress-value .unit{font-family:var(--font-body);font-size:14px;color:var(--text-tertiary);margin-left:3px;}
+  .progress-delta{display:flex;align-items:center;gap:3px;margin-top:5px;font-family:var(--font-body);font-weight:600;font-size:12px;}
+  .progress-delta svg{width:11px;height:11px;}
+  .delta-up{color:var(--accent-bright);}
   .delta-flat{color:var(--text-tertiary);}
-  .mini-bars{display:flex;align-items:flex-end;gap:5px;height:40px;}
-  .mini-bar{width:6px;border-radius:6px;background:var(--track-empty);}
-  .mini-bar.last{background:var(--accent);}
+  /* Small, quiet trend indicator — a hint of evolution, not a chart */
+  .mini-bars{display:flex;align-items:flex-end;gap:3px;height:26px;flex-shrink:0;}
+  .mini-bar{width:4px;border-radius:4px;background:var(--track-empty);}
+  .mini-bar.last{background:var(--accent-bright);}
 
   /* ---------- Activity row ---------- */
   .activity-row{
@@ -272,8 +281,8 @@
   .stat .v{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-primary);letter-spacing:-0.3px;}
   .stat .l{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);margin-top:3px;}
   .v-divider{width:1px;height:34px;background:var(--border);}
-  .streak-row{display:flex;align-items:center;gap:5px;}
-  .streak-row svg{width:16px;height:16px;color:var(--accent-bright);}
+  .activity-icon-row{display:flex;align-items:center;gap:6px;}
+  .activity-icon-row svg{width:15px;height:15px;color:var(--accent-bright);}
 
   /* ---------- Rutinas ---------- */
   .rutinas-header{display:flex;align-items:flex-start;justify-content:space-between;padding-top:6px;}
@@ -421,8 +430,8 @@
     <div class="tab-pane active" id="pane-home">
       <div class="home-header">
         <div>
-          <div class="eyebrow" id="greeting">Buenos días</div>
-          <div class="display-name">Felipe</div>
+          <div class="display-name" id="greetingName">Buenas noches, Felipe</div>
+          <div class="greeting-sub">¿Listo para entrenar?</div>
         </div>
         <div class="header-actions">
           <div class="icon-btn"><i data-feather="bell"></i></div>
@@ -451,22 +460,19 @@
         <span class="section-title">Tu progreso</span>
         <span class="section-action" onclick="showTab('progreso')">Ver todo <i data-feather="chevron-right"></i></span>
       </div>
-      <div class="h-scroll">
+      <div class="progress-grid">
         <div class="card progress-card">
           <div class="progress-name">Press banca</div>
           <div class="progress-bottom">
             <div>
-              <div class="progress-value"><span class="num">72.5</span><span class="unit">kg</span></div>
-              <div class="progress-delta delta-up"><i data-feather="trending-up"></i> +2.5 kg</div>
+              <div class="progress-value"><span class="num">72,5</span><span class="unit">kg</span></div>
+              <div class="progress-delta delta-up"><i data-feather="trending-up"></i> +2,5 kg</div>
             </div>
             <div class="mini-bars">
+              <div class="mini-bar" style="height:12px"></div>
+              <div class="mini-bar" style="height:16px"></div>
               <div class="mini-bar" style="height:20px"></div>
-              <div class="mini-bar" style="height:20px"></div>
-              <div class="mini-bar" style="height:25px"></div>
-              <div class="mini-bar" style="height:25px"></div>
-              <div class="mini-bar" style="height:32px"></div>
-              <div class="mini-bar" style="height:32px"></div>
-              <div class="mini-bar last" style="height:40px"></div>
+              <div class="mini-bar last" style="height:26px"></div>
             </div>
           </div>
         </div>
@@ -474,35 +480,14 @@
           <div class="progress-name">Sentadilla</div>
           <div class="progress-bottom">
             <div>
-              <div class="progress-value"><span class="num">95</span><span class="unit">kg</span></div>
+              <div class="progress-value"><span class="num">85</span><span class="unit">kg</span></div>
               <div class="progress-delta delta-up"><i data-feather="trending-up"></i> +5 kg</div>
             </div>
             <div class="mini-bars">
-              <div class="mini-bar" style="height:16px"></div>
-              <div class="mini-bar" style="height:18px"></div>
-              <div class="mini-bar" style="height:22px"></div>
-              <div class="mini-bar" style="height:26px"></div>
-              <div class="mini-bar" style="height:30px"></div>
-              <div class="mini-bar" style="height:30px"></div>
-              <div class="mini-bar last" style="height:40px"></div>
-            </div>
-          </div>
-        </div>
-        <div class="card progress-card">
-          <div class="progress-name">Peso muerto</div>
-          <div class="progress-bottom">
-            <div>
-              <div class="progress-value"><span class="num">110</span><span class="unit">kg</span></div>
-              <div class="progress-delta delta-flat">Sin cambios</div>
-            </div>
-            <div class="mini-bars">
-              <div class="mini-bar" style="height:36px"></div>
-              <div class="mini-bar" style="height:36px"></div>
-              <div class="mini-bar" style="height:32px"></div>
-              <div class="mini-bar" style="height:36px"></div>
-              <div class="mini-bar" style="height:36px"></div>
-              <div class="mini-bar" style="height:36px"></div>
-              <div class="mini-bar last" style="height:36px"></div>
+              <div class="mini-bar" style="height:10px"></div>
+              <div class="mini-bar" style="height:14px"></div>
+              <div class="mini-bar" style="height:19px"></div>
+              <div class="mini-bar last" style="height:26px"></div>
             </div>
           </div>
         </div>
@@ -512,13 +497,19 @@
 
       <div class="section-header"><span class="section-title">Actividad</span></div>
       <div class="activity-row">
-        <div class="stat"><span class="v">18</span><span class="l">Entrenamientos</span></div>
-        <div class="v-divider"></div>
-        <div class="stat"><span class="v">14h 32m</span><span class="l">Tiempo total</span></div>
+        <div class="stat">
+          <div class="activity-icon-row"><i data-feather="calendar"></i><span class="v">4</span></div>
+          <span class="l">días esta semana</span>
+        </div>
         <div class="v-divider"></div>
         <div class="stat">
-          <div class="streak-row"><i data-feather="zap"></i><span class="v">6</span></div>
-          <span class="l">Días de racha</span>
+          <div class="activity-icon-row"><i data-feather="zap"></i><span class="v">6</span></div>
+          <span class="l">días de racha</span>
+        </div>
+        <div class="v-divider"></div>
+        <div class="stat">
+          <div class="activity-icon-row"><i data-feather="layers"></i><span class="v">68</span></div>
+          <span class="l">series esta semana</span>
         </div>
       </div>
 
@@ -739,7 +730,7 @@
   (function(){
     const h = new Date().getHours();
     const g = h < 12 ? 'Buenos días' : (h < 19 ? 'Buenas tardes' : 'Buenas noches');
-    document.getElementById('greeting').textContent = g;
+    document.getElementById('greetingName').textContent = g + ', Felipe';
   })();
 
   // ---------- Workout mode state ----------
