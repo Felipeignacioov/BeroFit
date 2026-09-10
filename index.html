@@ -1,1 +1,933 @@
-doctyme
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forge — Vista previa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root{
+    --bg:#0A0A0F;
+    --bg-elevated:#0E0E14;
+    --surface:#15151D;
+    --surface-high:#1C1C26;
+    --surface-pressed:#22222E;
+    --border:#232330;
+    --border-light:#2C2C3A;
+    --accent:#8B5CF6;
+    --accent-bright:#A78BFA;
+    --accent-dim:#5B3FA0;
+    --accent-soft:rgba(139,92,246,0.14);
+    --accent-soft-border:rgba(139,92,246,0.28);
+    --text-primary:#F5F5F7;
+    --text-secondary:#9C9CAA;
+    --text-tertiary:#5D5D6B;
+    --success:#4ADE80;
+    --danger:#F87171;
+    --track-empty:#1E1E28;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% 0%, #1a1024 0%, #050507 45%),
+      #050507;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px;
+    font-family:var(--font-body);
+    gap:20px;
+  }
+  .hint{
+    color:#6b6b78;
+    font-family:var(--font-body);
+    font-size:13px;
+    text-align:center;
+    max-width:360px;
+    line-height:1.5;
+  }
+  .hint b{color:#a1a1ae;font-weight:600;}
+
+  /* ---------- Phone frame ---------- */
+  .phone{
+    position:relative;
+    width:375px;
+    height:812px;
+    background:#000;
+    border-radius:52px;
+    padding:14px;
+    box-shadow:
+      0 0 0 2px #1d1d24,
+      0 40px 80px -20px rgba(0,0,0,0.8),
+      0 0 60px rgba(139,92,246,0.08);
+  }
+  .screen{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:var(--bg);
+    border-radius:38px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .notch{
+    position:absolute;
+    top:14px;
+    left:50%;
+    transform:translateX(-50%);
+    width:120px;
+    height:26px;
+    background:#000;
+    border-radius:14px;
+    z-index:50;
+  }
+  .status-bar{
+    height:48px;
+    flex-shrink:0;
+  }
+
+  /* ---------- Tab content area ---------- */
+  .tab-content{
+    flex:1;
+    overflow-y:auto;
+    padding:4px 20px 0 20px;
+    scrollbar-width:none;
+  }
+  .tab-content::-webkit-scrollbar{display:none;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+
+  /* ---------- Bottom tab bar ---------- */
+  .tab-bar{
+    flex-shrink:0;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-around;
+    background:var(--bg-elevated);
+    border-top:1px solid var(--border);
+    padding:10px 8px 26px 8px;
+    gap:4px;
+  }
+  .tab-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    background:none;
+    border:none;
+    color:var(--text-tertiary);
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:11px;
+    padding:2px 10px;
+    cursor:pointer;
+  }
+  .tab-btn svg{width:22px;height:22px;stroke-width:2;}
+  .tab-btn.active{color:var(--accent-bright);}
+
+  /* ---------- Shared bits ---------- */
+  h1,h2,h3,p,span{margin:0;padding:0;}
+  .eyebrow{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:13px;
+    color:var(--text-secondary);
+  }
+  .display-name{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:32px;
+    letter-spacing:-0.4px;
+    color:var(--text-primary);
+  }
+  .page-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:32px;
+    letter-spacing:-0.4px;
+    color:var(--text-primary);
+  }
+  .page-subtitle{
+    font-family:var(--font-body);
+    font-size:14.5px;
+    color:var(--text-secondary);
+    margin-top:4px;
+  }
+  .section-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .section-title{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:-0.2px;
+    color:var(--text-primary);
+  }
+  .section-action{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    font-family:var(--font-body);
+    font-weight:500;
+    font-size:14.5px;
+    color:var(--text-secondary);
+  }
+  .section-action svg{width:15px;height:15px;}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:20px;
+  }
+
+  /* ---------- Header (Home) ---------- */
+  .home-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:6px;
+  }
+  .header-actions{display:flex;align-items:center;gap:10px;}
+  .icon-btn{
+    width:40px;height:40px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-secondary);
+  }
+  .icon-btn svg{width:18px;height:18px;}
+  .avatar{
+    width:40px;height:40px;border-radius:999px;
+    background:var(--surface-high);border:1.5px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:600;font-size:16px;
+    color:var(--accent-bright);
+  }
+  .avatar-lg{
+    width:84px;height:84px;border-radius:999px;
+    background:var(--surface-high);border:2px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:700;font-size:34px;
+    color:var(--accent-bright);
+    margin:0 auto 16px auto;
+  }
+
+  /* ---------- Hero card ---------- */
+  .hero{
+    position:relative;
+    border-radius:28px;
+    overflow:hidden;
+    padding:24px;
+    min-height:200px;
+    background:linear-gradient(135deg,#7C3AED,#5B21B6);
+    box-shadow:0 10px 30px -5px rgba(139,92,246,0.45);
+    margin-top:24px;
+  }
+  .hero-watermark{
+    position:absolute;
+    right:-6px;top:-40px;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:170px;
+    color:rgba(255,255,255,0.06);
+    line-height:1;
+    pointer-events:none;
+  }
+  .hero-eyebrow{
+    font-family:var(--font-body);font-weight:600;font-size:13px;
+    color:rgba(255,255,255,0.75);margin-bottom:6px;position:relative;
+  }
+  .hero-title{
+    font-family:var(--font-display);font-weight:700;font-size:38px;
+    color:#fff;letter-spacing:-0.5px;line-height:1.05;position:relative;
+  }
+  .hero-meta{
+    display:flex;align-items:center;gap:10px;margin:12px 0 22px 0;position:relative;
+  }
+  .hero-meta-item{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.85);font-size:14.5px;font-family:var(--font-body);font-weight:500;}
+  .hero-meta-item svg{width:13px;height:13px;color:rgba(255,255,255,0.75);}
+  .hero-dot{width:3px;height:3px;border-radius:2px;background:rgba(255,255,255,0.4);}
+  .hero-cta{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:#fff;height:52px;border-radius:16px;
+    font-family:var(--font-body);font-weight:600;font-size:15.5px;color:var(--accent);
+    border:none;width:100%;cursor:pointer;
+  }
+  .hero-cta svg{width:17px;height:17px;}
+
+  /* ---------- Progress cards (horizontal scroll) ---------- */
+  .h-scroll{
+    display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;
+    scrollbar-width:none;margin:0 -20px;padding-left:20px;padding-right:20px;
+  }
+  .h-scroll::-webkit-scrollbar{display:none;}
+  .progress-card{
+    flex-shrink:0;width:168px;
+  }
+  .progress-name{
+    font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);
+    margin-bottom:16px;
+  }
+  .progress-bottom{display:flex;align-items:flex-end;justify-content:space-between;}
+  .progress-value{display:flex;align-items:baseline;}
+  .progress-value .num{font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--text-primary);letter-spacing:-0.4px;}
+  .progress-value .unit{font-family:var(--font-body);font-size:14.5px;color:var(--text-tertiary);margin-left:3px;}
+  .progress-delta{display:flex;align-items:center;gap:3px;margin-top:4px;font-family:var(--font-body);font-weight:500;font-size:12px;}
+  .progress-delta svg{width:12px;height:12px;}
+  .delta-up{color:var(--success);}
+  .delta-flat{color:var(--text-tertiary);}
+  .mini-bars{display:flex;align-items:flex-end;gap:5px;height:40px;}
+  .mini-bar{width:6px;border-radius:6px;background:var(--track-empty);}
+  .mini-bar.last{background:var(--accent);}
+
+  /* ---------- Activity row ---------- */
+  .activity-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface);border:1px solid var(--border);border-radius:22px;
+    padding:20px;
+  }
+  .stat{display:flex;flex-direction:column;}
+  .stat .v{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-primary);letter-spacing:-0.3px;}
+  .stat .l{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);margin-top:3px;}
+  .v-divider{width:1px;height:34px;background:var(--border);}
+  .streak-row{display:flex;align-items:center;gap:5px;}
+  .streak-row svg{width:16px;height:16px;color:var(--accent-bright);}
+
+  /* ---------- Rutinas ---------- */
+  .rutinas-header{display:flex;align-items:flex-start;justify-content:space-between;padding-top:6px;}
+  .add-btn{
+    width:44px;height:44px;border-radius:16px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;color:#0A0A0F;border:none;
+  }
+  .add-btn svg{width:20px;height:20px;}
+  .routine-card{
+    display:flex;align-items:center;gap:14px;
+    background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:18px;
+    margin-bottom:12px;cursor:pointer;
+  }
+  .routine-icon{
+    width:44px;height:44px;border-radius:14px;background:var(--accent-soft);
+    border:1px solid var(--accent-soft-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .routine-icon svg{width:18px;height:18px;color:var(--accent-bright);}
+  .routine-info{flex:1;min-width:0;}
+  .routine-name{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--text-primary);margin-bottom:3px;}
+  .routine-meta{font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);}
+  .routine-last{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);margin-top:4px;}
+  .chev{width:20px;height:20px;color:var(--text-tertiary);flex-shrink:0;}
+
+  /* ---------- Progreso screen ---------- */
+  .summary-row{display:flex;align-items:center;justify-content:space-between;}
+  .chart{display:flex;align-items:flex-end;justify-content:space-between;height:110px;margin-top:4px;}
+  .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;}
+  .bar-track{flex:1;display:flex;align-items:flex-end;margin-bottom:10px;}
+  .bar{width:16px;border-radius:6px;background:var(--surface-high);}
+  .bar.today{background:var(--accent);}
+  .day-label{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
+  .day-label.today{color:var(--accent-bright);font-weight:600;}
+  .legend{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:12px;}
+  .legend-dot{width:7px;height:7px;border-radius:4px;background:var(--accent);}
+  .legend-text{font-family:var(--font-body);font-size:12px;color:var(--text-tertiary);}
+  .pr-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);}
+  .pr-row:last-child{border-bottom:none;}
+  .pr-icon{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .pr-icon svg{width:16px;height:16px;color:var(--accent-bright);}
+  .pr-name{font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-primary);}
+  .pr-date{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);margin-top:2px;}
+  .pr-value{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--text-primary);margin-left:auto;}
+
+  /* ---------- Perfil ---------- */
+  .profile-header{text-align:center;padding-top:6px;}
+  .profile-name{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--text-primary);margin-bottom:8px;}
+  .goal-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--accent-soft);border:1px solid var(--accent-soft-border);
+    padding:6px 12px;border-radius:999px;margin-bottom:10px;
+  }
+  .goal-pill svg{width:12px;height:12px;color:var(--accent-bright);}
+  .goal-pill span{font-family:var(--font-body);font-weight:600;font-size:12px;color:var(--accent-bright);}
+  .member-since{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
+  .settings-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-icon{width:32px;height:32px;border-radius:10px;background:var(--surface-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .settings-icon svg{width:16px;height:16px;color:var(--text-secondary);}
+  .settings-label{font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-primary);flex:1;}
+  .logout-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0;color:var(--danger);}
+  .logout-row svg{width:16px;height:16px;}
+  .logout-row span{font-family:var(--font-body);font-weight:500;font-size:14.5px;}
+
+  /* ---------- Workout overlay ---------- */
+  .workout-overlay{
+    position:absolute;inset:0;background:var(--bg);
+    display:flex;flex-direction:column;
+    transform:translateY(100%);
+    transition:transform 0.32s cubic-bezier(.32,.72,0,1);
+    z-index:100;
+    padding:56px 20px 0 20px;
+  }
+  .workout-overlay.open{transform:translateY(0);}
+  .workout-header{display:flex;align-items:flex-start;justify-content:space-between;}
+  .workout-routine{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--accent-bright);margin-bottom:4px;}
+  .workout-progress-label{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
+  .close-btn{
+    width:36px;height:36px;border-radius:999px;background:var(--surface);
+    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-primary);
+  }
+  .close-btn svg{width:18px;height:18px;}
+  .dots-row{display:flex;gap:6px;margin:20px 0 26px 0;}
+  .dot{flex:1;height:4px;border-radius:2px;background:var(--surface-high);}
+  .dot.done{background:var(--accent-dim);}
+  .dot.active{background:var(--accent);}
+  .exercise-name{font-family:var(--font-display);font-weight:700;font-size:28px;color:var(--text-primary);}
+  .sets-progress{font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);margin-top:4px;}
+  .table-header{display:flex;align-items:center;padding:16px 4px 8px 4px;}
+  .table-header span{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
+  .set-row{
+    display:flex;align-items:center;padding:14px 4px;border-bottom:1px solid var(--border);
+  }
+  .set-row.active-row{
+    background:var(--accent-soft);border-radius:14px;margin:0 -12px;padding:14px 12px;border-bottom-color:transparent;
+  }
+  .set-row.completed{opacity:0.55;}
+  .set-num{font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-secondary);width:28px;}
+  .set-val{flex:1;display:flex;align-items:baseline;gap:4px;}
+  .set-val .n{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--text-primary);}
+  .set-val .u{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
+  .set-check{
+    width:30px;height:30px;border-radius:999px;border:1.5px solid var(--border-light);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .set-check.done{background:var(--success);border-color:var(--success);}
+  .set-check svg{width:15px;height:15px;color:#0A0A0F;}
+  .rest-banner{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface);border:1px solid var(--border-light);border-radius:22px;
+    padding:20px;margin-top:20px;
+  }
+  .rest-label{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:4px;}
+  .rest-time{font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--text-primary);letter-spacing:-0.5px;}
+  .skip-btn{
+    background:var(--surface-high);border:none;border-radius:14px;padding:10px 16px;
+    font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-secondary);cursor:pointer;
+  }
+  .workout-footer{
+    border-top:1px solid var(--border);padding:16px 0 34px 0;margin-top:auto;
+  }
+  .next-row{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+  .next-row svg{width:15px;height:15px;color:var(--text-tertiary);}
+  .next-label{font-family:var(--font-body);font-size:12px;color:var(--text-tertiary);}
+  .next-name{font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-primary);}
+  .primary-btn{
+    width:100%;height:58px;border-radius:16px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--font-body);font-weight:600;font-size:16px;color:#0A0A0F;
+    box-shadow:0 10px 20px -5px rgba(139,92,246,0.4);
+  }
+  .primary-btn svg{width:17px;height:17px;}
+</style>
+</head>
+<body>
+
+<div class="hint">Esta es una <b>vista previa visual e interactiva</b> — toca los tabs de abajo, "Iniciar entrenamiento" y marca series para ver las interacciones.</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="status-bar"></div>
+
+    <div class="tab-content" id="tabContent">
+
+      <!-- ============ HOME ============ -->
+      <div class="tab-pane active" id="pane-home">
+        <div class="home-header">
+          <div>
+            <div class="eyebrow" id="greeting">Buenos días</div>
+            <div class="display-name">Felipe</div>
+          </div>
+          <div class="header-actions">
+            <div class="icon-btn"><i data-feather="bell"></i></div>
+            <div class="avatar">F</div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-watermark">4</div>
+          <div class="hero-eyebrow">Tu entrenamiento de hoy</div>
+          <div class="hero-title">Push</div>
+          <div class="hero-meta">
+            <div class="hero-meta-item"><i data-feather="layers"></i> 4 ejercicios</div>
+            <div class="hero-dot"></div>
+            <div class="hero-meta-item"><i data-feather="clock"></i> ~50 min</div>
+          </div>
+          <button class="hero-cta" onclick="openWorkout()">Iniciar entrenamiento <i data-feather="arrow-right"></i></button>
+        </div>
+
+        <div style="height:32px"></div>
+
+        <div class="section-header">
+          <span class="section-title">Tu progreso</span>
+          <span class="section-action" onclick="showTab('progreso')">Ver todo <i data-feather="chevron-right"></i></span>
+        </div>
+        <div class="h-scroll">
+          <div class="card progress-card">
+            <div class="progress-name">Press banca</div>
+            <div class="progress-bottom">
+              <div>
+                <div class="progress-value"><span class="num">72.5</span><span class="unit">kg</span></div>
+                <div class="progress-delta delta-up"><i data-feather="trending-up"></i> +2.5 kg</div>
+              </div>
+              <div class="mini-bars">
+                <div class="mini-bar" style="height:20px"></div>
+                <div class="mini-bar" style="height:20px"></div>
+                <div class="mini-bar" style="height:25px"></div>
+                <div class="mini-bar" style="height:25px"></div>
+                <div class="mini-bar" style="height:32px"></div>
+                <div class="mini-bar" style="height:32px"></div>
+                <div class="mini-bar last" style="height:40px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card progress-card">
+            <div class="progress-name">Sentadilla</div>
+            <div class="progress-bottom">
+              <div>
+                <div class="progress-value"><span class="num">95</span><span class="unit">kg</span></div>
+                <div class="progress-delta delta-up"><i data-feather="trending-up"></i> +5 kg</div>
+              </div>
+              <div class="mini-bars">
+                <div class="mini-bar" style="height:16px"></div>
+                <div class="mini-bar" style="height:18px"></div>
+                <div class="mini-bar" style="height:22px"></div>
+                <div class="mini-bar" style="height:26px"></div>
+                <div class="mini-bar" style="height:30px"></div>
+                <div class="mini-bar" style="height:30px"></div>
+                <div class="mini-bar last" style="height:40px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card progress-card">
+            <div class="progress-name">Peso muerto</div>
+            <div class="progress-bottom">
+              <div>
+                <div class="progress-value"><span class="num">110</span><span class="unit">kg</span></div>
+                <div class="progress-delta delta-flat">Sin cambios</div>
+              </div>
+              <div class="mini-bars">
+                <div class="mini-bar" style="height:36px"></div>
+                <div class="mini-bar" style="height:36px"></div>
+                <div class="mini-bar" style="height:32px"></div>
+                <div class="mini-bar" style="height:36px"></div>
+                <div class="mini-bar" style="height:36px"></div>
+                <div class="mini-bar" style="height:36px"></div>
+                <div class="mini-bar last" style="height:36px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:32px"></div>
+
+        <div class="section-header"><span class="section-title">Actividad</span></div>
+        <div class="activity-row">
+          <div class="stat"><span class="v">18</span><span class="l">Entrenamientos</span></div>
+          <div class="v-divider"></div>
+          <div class="stat"><span class="v">14h 32m</span><span class="l">Tiempo total</span></div>
+          <div class="v-divider"></div>
+          <div class="stat">
+            <div class="streak-row"><i data-feather="zap"></i><span class="v">6</span></div>
+            <span class="l">Días de racha</span>
+          </div>
+        </div>
+
+        <div style="height:24px"></div>
+      </div>
+
+      <!-- ============ RUTINAS ============ -->
+      <div class="tab-pane" id="pane-rutinas">
+        <div class="rutinas-header">
+          <div>
+            <div class="page-title">Mis rutinas</div>
+            <div class="page-subtitle">3 rutinas activas</div>
+          </div>
+          <button class="add-btn"><i data-feather="plus"></i></button>
+        </div>
+
+        <div style="height:24px"></div>
+
+        <div class="routine-card" onclick="openWorkout()">
+          <div class="routine-icon"><i data-feather="zap"></i></div>
+          <div class="routine-info">
+            <div class="routine-name">Push</div>
+            <div class="routine-meta">4 ejercicios · ~50 min</div>
+            <div class="routine-last">Última vez: Hace 2 días</div>
+          </div>
+          <i data-feather="chevron-right" class="chev"></i>
+        </div>
+
+        <div class="routine-card">
+          <div class="routine-icon"><i data-feather="zap"></i></div>
+          <div class="routine-info">
+            <div class="routine-name">Pull</div>
+            <div class="routine-meta">5 ejercicios · ~55 min</div>
+            <div class="routine-last">Última vez: Hace 4 días</div>
+          </div>
+          <i data-feather="chevron-right" class="chev"></i>
+        </div>
+
+        <div class="routine-card">
+          <div class="routine-icon"><i data-feather="zap"></i></div>
+          <div class="routine-info">
+            <div class="routine-name">Legs</div>
+            <div class="routine-meta">5 ejercicios · ~60 min</div>
+            <div class="routine-last">Última vez: Hace 6 días</div>
+          </div>
+          <i data-feather="chevron-right" class="chev"></i>
+        </div>
+
+        <div style="height:24px"></div>
+      </div>
+
+      <!-- ============ PROGRESO ============ -->
+      <div class="tab-pane" id="pane-progreso">
+        <div class="page-title" style="padding-top:6px">Progreso</div>
+        <div class="page-subtitle">Un vistazo a tu evolución</div>
+
+        <div style="height:24px"></div>
+
+        <div class="card">
+          <div class="summary-row">
+            <div class="stat"><span class="v">18</span><span class="l">Entrenamientos</span></div>
+            <div class="v-divider"></div>
+            <div class="stat"><span class="v">14h 32m</span><span class="l">Tiempo total</span></div>
+            <div class="v-divider"></div>
+            <div class="stat"><span class="v">6</span><span class="l">Racha (días)</span></div>
+          </div>
+        </div>
+
+        <div style="height:28px"></div>
+        <div class="section-header"><span class="section-title">Volumen semanal</span></div>
+        <div class="card">
+          <div class="chart">
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:52%"></div></div><span class="day-label">L</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:38%"></div></div><span class="day-label">M</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:66%"></div></div><span class="day-label">X</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:32%"></div></div><span class="day-label">J</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar today" style="height:100%"></div></div><span class="day-label today">V</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:46%"></div></div><span class="day-label">S</span></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:3px"></div></div><span class="day-label">D</span></div>
+          </div>
+          <div class="legend"><div class="legend-dot"></div><span class="legend-text">Hoy</span></div>
+        </div>
+
+        <div style="height:28px"></div>
+        <div class="section-header"><span class="section-title">Mejores marcas</span></div>
+        <div class="card" style="padding:0">
+          <div class="pr-row">
+            <div class="pr-icon"><i data-feather="award"></i></div>
+            <div><div class="pr-name">Press banca</div><div class="pr-date">3 sept</div></div>
+            <div class="pr-value">72.5 kg</div>
+          </div>
+          <div class="pr-row">
+            <div class="pr-icon"><i data-feather="award"></i></div>
+            <div><div class="pr-name">Sentadilla</div><div class="pr-date">28 ago</div></div>
+            <div class="pr-value">95 kg</div>
+          </div>
+          <div class="pr-row">
+            <div class="pr-icon"><i data-feather="award"></i></div>
+            <div><div class="pr-name">Peso muerto</div><div class="pr-date">15 ago</div></div>
+            <div class="pr-value">110 kg</div>
+          </div>
+          <div class="pr-row">
+            <div class="pr-icon"><i data-feather="award"></i></div>
+            <div><div class="pr-name">Press militar</div><div class="pr-date">10 ago</div></div>
+            <div class="pr-value">42.5 kg</div>
+          </div>
+        </div>
+
+        <div style="height:24px"></div>
+      </div>
+
+      <!-- ============ PERFIL ============ -->
+      <div class="tab-pane" id="pane-perfil">
+        <div class="page-title" style="padding-top:6px">Perfil</div>
+
+        <div style="height:24px"></div>
+
+        <div class="profile-header">
+          <div class="avatar-lg">F</div>
+          <div class="profile-name">Felipe</div>
+          <div class="goal-pill"><i data-feather="target"></i><span>Ganar fuerza</span></div>
+          <div class="member-since">Miembro desde ene. 2025</div>
+        </div>
+
+        <div style="height:28px"></div>
+
+        <div class="card">
+          <div class="summary-row">
+            <div class="stat" style="align-items:center"><span class="v">18</span><span class="l">Entrenamientos</span></div>
+            <div class="v-divider"></div>
+            <div class="stat" style="align-items:center"><span class="v">Interm.</span><span class="l">Nivel</span></div>
+            <div class="v-divider"></div>
+            <div class="stat" style="align-items:center"><span class="v">6</span><span class="l">Racha</span></div>
+          </div>
+        </div>
+
+        <div style="height:28px"></div>
+
+        <div class="card" style="padding:0">
+          <div class="settings-row"><div class="settings-icon"><i data-feather="user"></i></div><span class="settings-label">Información personal</span><i data-feather="chevron-right" class="chev"></i></div>
+          <div class="settings-row"><div class="settings-icon"><i data-feather="target"></i></div><span class="settings-label">Objetivo y nivel</span><i data-feather="chevron-right" class="chev"></i></div>
+          <div class="settings-row"><div class="settings-icon"><i data-feather="sliders"></i></div><span class="settings-label">Unidades y preferencias</span><i data-feather="chevron-right" class="chev"></i></div>
+          <div class="settings-row"><div class="settings-icon"><i data-feather="bell"></i></div><span class="settings-label">Notificaciones</span><i data-feather="chevron-right" class="chev"></i></div>
+          <div class="settings-row"><div class="settings-icon"><i data-feather="help-circle"></i></div><span class="settings-label">Ayuda y soporte</span><i data-feather="chevron-right" class="chev"></i></div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="logout-row"><i data-feather="log-out"></i><span>Cerrar sesión</span></div>
+
+        <div style="height:24px"></div>
+      </div>
+
+    </div>
+
+    <!-- ============ BOTTOM TAB BAR ============ -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="home" onclick="showTab('home')"><i data-feather="home"></i>Inicio</button>
+      <button class="tab-btn" data-tab="rutinas" onclick="showTab('rutinas')"><i data-feather="list"></i>Rutinas</button>
+      <button class="tab-btn" data-tab="progreso" onclick="showTab('progreso')"><i data-feather="bar-chart-2"></i>Progreso</button>
+      <button class="tab-btn" data-tab="perfil" onclick="showTab('perfil')"><i data-feather="user"></i>Perfil</button>
+    </div>
+
+    <!-- ============ WORKOUT MODE OVERLAY ============ -->
+    <div class="workout-overlay" id="workoutOverlay">
+      <div class="workout-header">
+        <div>
+          <div class="workout-routine">Push</div>
+          <div class="workout-progress-label" id="wkExerciseLabel">Ejercicio 1 de 4</div>
+        </div>
+        <button class="close-btn" onclick="closeWorkout()"><i data-feather="x"></i></button>
+      </div>
+
+      <div class="dots-row" id="wkDots"></div>
+
+      <div class="exercise-name" id="wkExerciseName">Press banca</div>
+      <div class="sets-progress" id="wkSetsProgress">2 de 4 series completadas</div>
+
+      <div class="table-header">
+        <span style="width:28px">Serie</span>
+        <span style="flex:1">Peso</span>
+        <span style="flex:1">Reps</span>
+        <span style="width:30px"></span>
+      </div>
+
+      <div id="wkSetsList"></div>
+
+      <div class="rest-banner" id="restBanner" style="display:none">
+        <div>
+          <div class="rest-label">Descanso</div>
+          <div class="rest-time" id="restTime">01:30</div>
+        </div>
+        <button class="skip-btn" onclick="skipRest()">Saltar</button>
+      </div>
+
+      <div class="workout-footer">
+        <div class="next-row" id="wkNextRow">
+          <i data-feather="arrow-right-circle"></i>
+          <span class="next-label">Siguiente</span>
+          <span class="next-name" id="wkNextName">Press inclinado mancuerna</span>
+        </div>
+        <button class="primary-btn" id="wkPrimaryBtn" onclick="onPrimaryAction()">Completar serie <i data-feather="check"></i></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ---------- Tab switching ----------
+  function showTab(name){
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('pane-' + name).classList.add('active');
+    document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
+    document.getElementById('tabContent').scrollTop = 0;
+  }
+
+  // Greeting based on time of day
+  (function(){
+    const h = new Date().getHours();
+    const g = h < 12 ? 'Buenos días' : (h < 19 ? 'Buenas tardes' : 'Buenas noches');
+    document.getElementById('greeting').textContent = g;
+  })();
+
+  // ---------- Workout mode state ----------
+  const REST_SECONDS = 90;
+  const workout = [
+    { name:'Press banca', sets:[
+      {weight:70, reps:8, completed:true},
+      {weight:70, reps:8, completed:true},
+      {weight:72.5, reps:7, completed:true},
+      {weight:72.5, reps:6, completed:false},
+    ]},
+    { name:'Press inclinado mancuerna', sets:[
+      {weight:26, reps:10, completed:false},
+      {weight:26, reps:10, completed:false},
+      {weight:26, reps:10, completed:false},
+    ]},
+    { name:'Elevaciones laterales', sets:[
+      {weight:10, reps:15, completed:false},
+      {weight:10, reps:15, completed:false},
+      {weight:10, reps:15, completed:false},
+    ]},
+    { name:'Extensión de tríceps', sets:[
+      {weight:22.5, reps:12, completed:false},
+      {weight:22.5, reps:12, completed:false},
+      {weight:22.5, reps:12, completed:false},
+    ]},
+  ];
+  let exIndex = 0;
+  let restRemaining = null;
+  let restInterval = null;
+
+  function openWorkout(){
+    document.getElementById('workoutOverlay').classList.add('open');
+    renderWorkout();
+    feather.replace();
+  }
+  function closeWorkout(){
+    document.getElementById('workoutOverlay').classList.remove('open');
+    clearInterval(restInterval);
+  }
+
+  function activeSetIndex(ex){
+    return ex.sets.findIndex(s => !s.completed);
+  }
+
+  function renderWorkout(){
+    const ex = workout[exIndex];
+    const next = workout[exIndex+1];
+    const isLast = exIndex === workout.length - 1;
+    const aIdx = activeSetIndex(ex);
+    const allDone = aIdx === -1;
+    const doneCount = ex.sets.filter(s=>s.completed).length;
+
+    document.getElementById('wkExerciseLabel').textContent = 'Ejercicio ' + (exIndex+1) + ' de ' + workout.length;
+    document.getElementById('wkExerciseName').textContent = ex.name;
+    document.getElementById('wkSetsProgress').textContent = doneCount + ' de ' + ex.sets.length + ' series completadas';
+
+    // dots
+    const dots = document.getElementById('wkDots');
+    dots.innerHTML = '';
+    workout.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === exIndex ? ' active' : (i < exIndex ? ' done' : ''));
+      dots.appendChild(d);
+    });
+
+    // sets list
+    const list = document.getElementById('wkSetsList');
+    list.innerHTML = '';
+    ex.sets.forEach((s, i) => {
+      const row = document.createElement('div');
+      row.className = 'set-row' + (i === aIdx ? ' active-row' : '') + (s.completed ? ' completed' : '');
+      row.innerHTML =
+        '<span class="set-num">' + (i+1) + '</span>' +
+        '<span class="set-val"><span class="n">' + s.weight + '</span><span class="u">kg</span></span>' +
+        '<span class="set-val"><span class="n">' + s.reps + '</span><span class="u">reps</span></span>' +
+        '<span class="set-check' + (s.completed ? ' done' : '') + '" data-i="' + i + '">' + (s.completed ? '<i data-feather="check"></i>' : '') + '</span>';
+      row.querySelector('.set-check').addEventListener('click', () => toggleSet(i));
+      list.appendChild(row);
+    });
+
+    // next row
+    const nextRow = document.getElementById('wkNextRow');
+    if(next){
+      nextRow.style.display = 'flex';
+      document.getElementById('wkNextName').textContent = next.name;
+    } else {
+      nextRow.style.display = 'none';
+    }
+
+    // primary button
+    const btn = document.getElementById('wkPrimaryBtn');
+    if(allDone){
+      btn.innerHTML = (isLast ? 'Finalizar entrenamiento' : 'Siguiente ejercicio') + ' <i data-feather="' + (isLast ? 'check' : 'arrow-right') + '"></i>';
+    } else {
+      btn.innerHTML = 'Completar serie <i data-feather="check"></i>';
+    }
+
+    feather.replace();
+  }
+
+  function toggleSet(i){
+    const ex = workout[exIndex];
+    ex.sets[i].completed = !ex.sets[i].completed;
+    renderWorkout();
+  }
+
+  function onPrimaryAction(){
+    const ex = workout[exIndex];
+    const aIdx = activeSetIndex(ex);
+    if(aIdx === -1){
+      // move to next exercise or finish
+      clearInterval(restInterval);
+      restRemaining = null;
+      document.getElementById('restBanner').style.display = 'none';
+      if(exIndex === workout.length - 1){
+        closeWorkout();
+        showTab('home');
+        return;
+      }
+      exIndex++;
+      renderWorkout();
+      return;
+    }
+    ex.sets[aIdx].completed = true;
+    startRest();
+    renderWorkout();
+  }
+
+  function startRest(){
+    clearInterval(restInterval);
+    restRemaining = REST_SECONDS;
+    const banner = document.getElementById('restBanner');
+    banner.style.display = 'flex';
+    updateRestDisplay();
+    restInterval = setInterval(() => {
+      restRemaining--;
+      if(restRemaining <= 0){
+        clearInterval(restInterval);
+        banner.style.display = 'none';
+        return;
+      }
+      updateRestDisplay();
+    }, 1000);
+  }
+  function updateRestDisplay(){
+    const m = Math.floor(restRemaining/60);
+    const s = restRemaining % 60;
+    document.getElementById('restTime').textContent =
+      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+  function skipRest(){
+    clearInterval(restInterval);
+    document.getElementById('restBanner').style.display = 'none';
+  }
+
+  feather.replace();
+</script>
+</body>
+</html>
