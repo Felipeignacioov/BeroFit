@@ -16,11 +16,11 @@
     --surface-pressed:#242430;
     --border:#232329;
     --border-light:#2C2C34;
-    --accent:#D7263D;
-    --accent-bright:#F0445A;
-    --accent-dim:#7A1522;
-    --accent-soft:rgba(215,38,61,0.14);
-    --accent-soft-border:rgba(215,38,61,0.28);
+    --accent:#B91C35;
+    --accent-bright:#E02D48;
+    --accent-dim:#7F1028;
+    --accent-soft:rgba(185,28,53,0.13);
+    --accent-soft-border:rgba(185,28,53,0.26);
     --text-primary:#FFFFFF;
     --text-secondary:#A1A1AA;
     --text-tertiary:#5D5D6B;
@@ -184,14 +184,16 @@
   }
 
   /* ---------- Hero card ---------- */
+  /* Largest surface on Home: stays dark and neutral. Red appears only in
+     the CTA button and the small eyebrow indicator dot. */
   .hero{
     position:relative;
     border-radius:28px;
     overflow:hidden;
     padding:24px;
     min-height:200px;
-    background:linear-gradient(135deg,#F0445A,#7A0F1F);
-    box-shadow:0 10px 30px -5px rgba(215,38,61,0.45);
+    background:linear-gradient(135deg,#1B1B22,#0F0F13);
+    border:1px solid var(--border);
     margin-top:24px;
   }
   .hero-watermark{
@@ -200,30 +202,38 @@
     font-family:var(--font-display);
     font-weight:700;
     font-size:170px;
-    color:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.03);
     line-height:1;
     pointer-events:none;
   }
+  .hero-eyebrow-row{
+    display:flex;align-items:center;gap:8px;margin-bottom:8px;position:relative;
+  }
+  .hero-eyebrow-dot{
+    width:6px;height:6px;border-radius:3px;background:var(--accent-bright);flex-shrink:0;
+  }
   .hero-eyebrow{
     font-family:var(--font-body);font-weight:600;font-size:13px;
-    color:rgba(255,255,255,0.78);margin-bottom:6px;position:relative;
+    color:var(--text-secondary);position:relative;
   }
   .hero-title{
     font-family:var(--font-display);font-weight:700;font-size:38px;
-    color:#fff;letter-spacing:-0.5px;line-height:1.05;position:relative;
+    color:var(--text-primary);letter-spacing:-0.5px;line-height:1.05;position:relative;
   }
   .hero-meta{
     display:flex;align-items:center;gap:10px;margin:12px 0 22px 0;position:relative;
   }
-  .hero-meta-item{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.88);font-size:14.5px;font-family:var(--font-body);font-weight:500;}
-  .hero-meta-item svg{width:13px;height:13px;color:rgba(255,255,255,0.78);}
-  .hero-dot{width:3px;height:3px;border-radius:2px;background:rgba(255,255,255,0.4);}
+  .hero-meta-item{display:flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:14.5px;font-family:var(--font-body);font-weight:500;}
+  .hero-meta-item svg{width:13px;height:13px;color:var(--text-secondary);}
+  .hero-dot{width:3px;height:3px;border-radius:2px;background:var(--text-tertiary);}
   .hero-cta{
     position:relative;
     display:flex;align-items:center;justify-content:center;gap:8px;
-    background:#fff;height:52px;border-radius:16px;
-    font-family:var(--font-body);font-weight:600;font-size:15.5px;color:var(--accent);
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    height:52px;border-radius:16px;
+    font-family:var(--font-body);font-weight:600;font-size:15.5px;color:#fff;
     border:none;width:100%;cursor:pointer;
+    box-shadow:0 10px 24px -6px rgba(185,28,53,0.5);
   }
   .hero-cta svg{width:17px;height:17px;}
 
@@ -394,7 +404,7 @@
     background:linear-gradient(135deg,var(--accent-bright),var(--accent));
     display:flex;align-items:center;justify-content:center;gap:8px;
     font-family:var(--font-body);font-weight:600;font-size:16px;color:#fff;
-    box-shadow:0 10px 20px -5px rgba(215,38,61,0.45);
+    box-shadow:0 10px 20px -5px rgba(185,28,53,0.45);
   }
   .primary-btn svg{width:17px;height:17px;}
 </style>
@@ -422,7 +432,10 @@
 
       <div class="hero">
         <div class="hero-watermark">4</div>
-        <div class="hero-eyebrow">Tu entrenamiento de hoy</div>
+        <div class="hero-eyebrow-row">
+          <div class="hero-eyebrow-dot"></div>
+          <div class="hero-eyebrow">Tu entrenamiento de hoy</div>
+        </div>
         <div class="hero-title">Push</div>
         <div class="hero-meta">
           <div class="hero-meta-item"><i data-feather="layers"></i> 4 ejercicios</div>
