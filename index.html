@@ -423,6 +423,62 @@
     background:var(--surface-high);padding:5px 10px;border-radius:9px;flex-shrink:0;
   }
 
+  /* ---------- Historial de entrenamientos: month calendar ---------- */
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-nav-btn{
+    width:32px;height:32px;border-radius:999px;background:var(--surface-high);
+    border:1px solid var(--border-light);display:flex;align-items:center;justify-content:center;
+    color:var(--text-secondary);cursor:pointer;
+  }
+  .cal-nav-btn svg{width:15px;height:15px;}
+  .cal-month-label{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--text-primary);}
+  .cal-weekdays{
+    display:grid;grid-template-columns:repeat(7,1fr);
+    margin-bottom:8px;
+  }
+  .cal-weekdays span{
+    text-align:center;font-family:var(--font-body);font-weight:600;font-size:11px;color:var(--text-tertiary);
+  }
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px;}
+  .cal-day{
+    position:relative;
+    aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-radius:12px;cursor:pointer;
+  }
+  .cal-day-number{font-family:var(--font-body);font-weight:500;font-size:13px;color:var(--text-secondary);}
+  .cal-day.empty{cursor:default;}
+  .cal-day.today .cal-day-number{color:var(--text-primary);font-weight:700;}
+  .cal-day.today{border:1.5px solid var(--border-light);}
+  .cal-day.trained .cal-day-number{color:var(--text-primary);font-weight:600;}
+  .cal-day-dot{
+    width:4px;height:4px;border-radius:3px;background:var(--accent-bright);
+    margin-top:3px;
+  }
+  .cal-day.selected{background:var(--accent-soft);border:1px solid var(--accent-soft-border);}
+
+  .cal-day-panel{margin-top:18px;padding-top:16px;border-top:1px solid var(--border);}
+  .cal-day-panel-hint{font-family:var(--font-body);font-weight:500;font-size:13px;color:var(--text-tertiary);}
+  .cal-summary-date{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--text-primary);margin-bottom:6px;}
+  .cal-summary-meta{font-family:var(--font-body);font-weight:500;font-size:13.5px;color:var(--text-secondary);margin-bottom:3px;}
+  .cal-summary-cta{
+    display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    border:none;border-radius:12px;padding:10px 16px;cursor:pointer;
+    font-family:var(--font-body);font-weight:600;font-size:13.5px;color:#fff;
+  }
+  .cal-summary-cta svg{width:14px;height:14px;}
+
+  /* ---------- Workout detail (read-only session view) ---------- */
+  .wd-exercise-group{margin-bottom:22px;}
+  .wd-exercise-name{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--text-primary);margin-bottom:10px;}
+  .wd-set-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:11px 14px;margin-bottom:8px;
+  }
+  .wd-set-label{font-family:var(--font-body);font-weight:500;font-size:12.5px;color:var(--text-tertiary);}
+  .wd-set-value{font-family:var(--font-display);font-weight:600;font-size:14.5px;color:var(--text-primary);}
+
   /* ---------- Perfil ---------- */
   .profile-header{text-align:center;padding-top:6px;}
   .profile-name{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--text-primary);margin-bottom:8px;}
@@ -897,6 +953,23 @@
         <div id="personalRecordsList"></div>
       </div>
 
+      <div style="height:28px"></div>
+      <div class="section-header"><span class="section-title">Historial de entrenamientos</span></div>
+      <div class="card">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="goToPrevMonth()"><i data-feather="chevron-left"></i></button>
+          <div class="cal-month-label" id="calMonthLabel">Septiembre 2026</div>
+          <button class="cal-nav-btn" onclick="goToNextMonth()"><i data-feather="chevron-right"></i></button>
+        </div>
+
+        <div class="cal-weekdays">
+          <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+
+        <div class="cal-day-panel" id="calDayPanel"></div>
+      </div>
+
       <div style="height:24px"></div>
     </div>
 
@@ -1122,6 +1195,21 @@
     </div>
   </div>
 
+  <!-- ============ WORKOUT DETAIL: read-only view of a logged session ============ -->
+  <!-- Reached only from the calendar day panel ("Ver entrenamiento"). Shows
+       exactly what's in that day's workoutLogs entry — nothing invented. -->
+  <div class="flow-overlay" id="workoutDetailScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title" id="workoutDetailTitle">Piernas</div>
+        <div class="flow-subtitle" id="workoutDetailSubtitle">8 septiembre</div>
+      </div>
+      <button class="close-btn" onclick="closeWorkoutDetailScreen()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body" id="workoutDetailBody" style="padding-bottom:24px;"></div>
+  </div>
+
   <!-- ============ SUCCESS TOAST ============ -->
   <div class="toast" id="successToast">
     <div class="toast-icon"><i data-feather="check"></i></div>
@@ -1180,9 +1268,11 @@
   let restRemaining = null;
   let restInterval = null;
   let activeRoutineName = 'Push';
+  let workoutStartedAt = null;
 
   function openWorkout(){
     document.getElementById('wkRoutineName').textContent = activeRoutineName;
+    workoutStartedAt = Date.now();
     document.getElementById('workoutOverlay').classList.add('open');
     renderWorkout();
     feather.replace();
@@ -1768,14 +1858,19 @@
   // data; the record is a query over it.
   // ================================================================
 
+  // NOTE: these seven entries predate the workout-history calendar and were
+  // seeded only to demonstrate Récords personales — each is a single lift,
+  // not a full logged session (no routine, no duration). They're tagged
+  // 'legacy-seed' so the calendar (which needs a real session) correctly
+  // leaves them out instead of showing misleading "training days".
   let workoutLogs = [
-    { date:'2026-07-20', entries:[ { exerciseName:'Press banca',   weightKg:70,   reps:8 } ] },
-    { date:'2026-07-25', entries:[ { exerciseName:'Press militar', weightKg:40,   reps:8 } ] },
-    { date:'2026-08-10', entries:[ { exerciseName:'Sentadilla',    weightKg:90,   reps:6 }, { exerciseName:'Press militar', weightKg:42.5, reps:6 } ] },
-    { date:'2026-08-15', entries:[ { exerciseName:'Peso muerto',   weightKg:110,  reps:5 } ] },
-    { date:'2026-08-20', entries:[ { exerciseName:'Press banca',   weightKg:72.5, reps:8 } ] },
-    { date:'2026-08-28', entries:[ { exerciseName:'Sentadilla',    weightKg:95,   reps:6 } ] },
-    { date:'2026-09-03', entries:[ { exerciseName:'Press banca',   weightKg:75,   reps:6 } ] },
+    { date:'2026-07-20', source:'legacy-seed', entries:[ { exerciseName:'Press banca',   weightKg:70,   reps:8 } ] },
+    { date:'2026-07-25', source:'legacy-seed', entries:[ { exerciseName:'Press militar', weightKg:40,   reps:8 } ] },
+    { date:'2026-08-10', source:'legacy-seed', entries:[ { exerciseName:'Sentadilla',    weightKg:90,   reps:6 }, { exerciseName:'Press militar', weightKg:42.5, reps:6 } ] },
+    { date:'2026-08-15', source:'legacy-seed', entries:[ { exerciseName:'Peso muerto',   weightKg:110,  reps:5 } ] },
+    { date:'2026-08-20', source:'legacy-seed', entries:[ { exerciseName:'Press banca',   weightKg:72.5, reps:8 } ] },
+    { date:'2026-08-28', source:'legacy-seed', entries:[ { exerciseName:'Sentadilla',    weightKg:95,   reps:6 } ] },
+    { date:'2026-09-03', source:'legacy-seed', entries:[ { exerciseName:'Press banca',   weightKg:75,   reps:6 } ] },
   ];
 
   function todayIso(){
@@ -1783,10 +1878,11 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
-  // This is the real entry point for new records: whatever the user actually
-  // completed in the workout screen gets appended to the log here. Nothing
-  // about "Récords personales" is touched directly — it just re-reads the
-  // log next render and reflects whatever the new max turns out to be.
+  // This is the real entry point for new records AND for the workout-history
+  // calendar: whatever the user actually completed in the workout screen
+  // gets appended here as a full session (routine, duration, sets). Neither
+  // "Récords personales" nor "Historial de entrenamientos" store anything of
+  // their own — they both just re-read this log.
   function logCompletedWorkout(){
     const entries = [];
     workout.forEach(ex => {
@@ -1797,8 +1893,17 @@
       });
     });
     if(entries.length === 0) return;
-    workoutLogs.push({ date: todayIso(), entries });
+    const elapsedMs = workoutStartedAt ? (Date.now() - workoutStartedAt) : 0;
+    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+    workoutLogs.push({
+      date: todayIso(),
+      source: 'workout',
+      routineName: activeRoutineName,
+      durationMinutes,
+      entries,
+    });
     renderPersonalRecords();
+    renderTrainingCalendar();
   }
 
   function formatWeightEs(kg){
@@ -1886,6 +1991,168 @@
     feather.replace();
   }
 
+  // ================================================================
+  // PROGRESO: Historial de entrenamientos — a calendar over the same
+  // workoutLogs used by Récords personales. Only `source:'workout'` entries
+  // (real completed sessions, see logCompletedWorkout) mark a day — legacy
+  // PR-history seeds and manual "Añadir marca" imports are not full
+  // sessions, so they intentionally don't appear here.
+  // ================================================================
+
+  const MONTH_NAMES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  let calendarViewYear = new Date().getFullYear();
+  let calendarViewMonth = new Date().getMonth(); // 0-11
+  let selectedCalendarDate = null;
+
+  function isoDate(year, monthIndex, day){
+    return year + '-' + String(monthIndex + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+  }
+
+  // One workout session for a given date, built fresh from workoutLogs every
+  // time — if a logged workout were ever edited or removed, this simply
+  // reflects that on next render, same principle as the records above.
+  function getWorkoutSessionForDate(dateStr){
+    const logsForDay = workoutLogs.filter(log => log.date === dateStr && log.source === 'workout');
+    if(logsForDay.length === 0) return null;
+
+    const entries = logsForDay.flatMap(log => log.entries);
+    const exerciseNames = new Set(entries.map(e => e.exerciseName));
+    const routineName = logsForDay[0].routineName || null;
+    const durationMinutes = logsForDay.reduce((sum, log) => sum + (log.durationMinutes || 0), 0);
+
+    return {
+      date: dateStr,
+      routineName,
+      durationMinutes,
+      exerciseCount: exerciseNames.size,
+      setCount: entries.length,
+      entries,
+    };
+  }
+
+  function getTrainedDatesInMonth(year, monthIndex){
+    const prefix = year + '-' + String(monthIndex + 1).padStart(2, '0');
+    const dates = new Set();
+    workoutLogs.forEach(log => {
+      if(log.source === 'workout' && log.date.startsWith(prefix)) dates.add(log.date);
+    });
+    return dates;
+  }
+
+  function renderTrainingCalendar(){
+    document.getElementById('calMonthLabel').textContent =
+      MONTH_NAMES_ES[calendarViewMonth] + ' ' + calendarViewYear;
+
+    const trainedDates = getTrainedDatesInMonth(calendarViewYear, calendarViewMonth);
+    const todayStr = todayIso();
+
+    const firstOfMonth = new Date(calendarViewYear, calendarViewMonth, 1);
+    const mondayFirstIndex = (firstOfMonth.getDay() + 6) % 7; // 0 = Monday
+    const daysInMonth = new Date(calendarViewYear, calendarViewMonth + 1, 0).getDate();
+
+    let cellsHtml = '';
+    for(let i = 0; i < mondayFirstIndex; i++){
+      cellsHtml += '<div class="cal-day empty"></div>';
+    }
+    for(let day = 1; day <= daysInMonth; day++){
+      const dateStr = isoDate(calendarViewYear, calendarViewMonth, day);
+      const isTrained = trainedDates.has(dateStr);
+      const isToday = dateStr === todayStr;
+      const isSelected = dateStr === selectedCalendarDate;
+      const classes = ['cal-day'];
+      if(isTrained) classes.push('trained');
+      if(isToday) classes.push('today');
+      if(isSelected) classes.push('selected');
+      cellsHtml +=
+        '<div class="' + classes.join(' ') + '" onclick="selectCalendarDate(\'' + dateStr + '\')">' +
+          '<div class="cal-day-number">' + day + '</div>' +
+          (isTrained ? '<div class="cal-day-dot"></div>' : '') +
+        '</div>';
+    }
+    document.getElementById('calGrid').innerHTML = cellsHtml;
+
+    renderCalendarDayPanel();
+    feather.replace();
+  }
+
+  function goToPrevMonth(){
+    calendarViewMonth--;
+    if(calendarViewMonth < 0){ calendarViewMonth = 11; calendarViewYear--; }
+    renderTrainingCalendar();
+  }
+  function goToNextMonth(){
+    calendarViewMonth++;
+    if(calendarViewMonth > 11){ calendarViewMonth = 0; calendarViewYear++; }
+    renderTrainingCalendar();
+  }
+
+  function selectCalendarDate(dateStr){
+    selectedCalendarDate = dateStr;
+    renderTrainingCalendar();
+  }
+
+  function renderCalendarDayPanel(){
+    const panel = document.getElementById('calDayPanel');
+    if(!selectedCalendarDate){
+      panel.innerHTML = '<div class="cal-day-panel-hint">Toca un día para ver el entrenamiento.</div>';
+      return;
+    }
+
+    const session = getWorkoutSessionForDate(selectedCalendarDate);
+    if(!session){
+      panel.innerHTML = '<div class="cal-day-panel-hint">Sin entrenamiento este día.</div>';
+      return;
+    }
+
+    panel.innerHTML =
+      '<div class="cal-summary-date">' + formatDateEsFull(session.date) + '</div>' +
+      (session.routineName ? '<div class="cal-summary-meta">' + session.routineName + ' · ' + session.durationMinutes + ' min</div>' : '') +
+      '<div class="cal-summary-meta">' + session.exerciseCount + ' ejercicios · ' + session.setCount + ' series</div>' +
+      '<button class="cal-summary-cta" onclick="openWorkoutDetailScreen(\'' + session.date + '\')">Ver entrenamiento <i data-feather="arrow-right"></i></button>';
+    feather.replace();
+  }
+
+  function formatDateEsFull(iso){
+    const parts = iso.split('-');
+    const day = parseInt(parts[2], 10);
+    const month = MONTH_NAMES_ES[parseInt(parts[1], 10) - 1].toLowerCase();
+    return day + ' ' + month;
+  }
+
+  // ---------- Workout detail: read-only view of a specific logged session ----------
+  function openWorkoutDetailScreen(dateStr){
+    const session = getWorkoutSessionForDate(dateStr);
+    if(!session) return;
+
+    document.getElementById('workoutDetailTitle').textContent = session.routineName || 'Entrenamiento';
+    document.getElementById('workoutDetailSubtitle').textContent = formatDateEsFull(session.date);
+
+    const byExercise = {};
+    session.entries.forEach(e => {
+      if(!byExercise[e.exerciseName]) byExercise[e.exerciseName] = [];
+      byExercise[e.exerciseName].push(e);
+    });
+
+    const body = document.getElementById('workoutDetailBody');
+    body.innerHTML = Object.keys(byExercise).map(name => {
+      const setsHtml = byExercise[name].map((s, i) => (
+        '<div class="wd-set-row">' +
+          '<span class="wd-set-label">Serie ' + (i + 1) + '</span>' +
+          '<span class="wd-set-value">' + formatWeightEs(s.weightKg) + ' kg × ' + s.reps + '</span>' +
+        '</div>'
+      )).join('');
+      return '<div class="wd-exercise-group"><div class="wd-exercise-name">' + name + '</div>' + setsHtml + '</div>';
+    }).join('');
+
+    document.getElementById('workoutDetailScreen').classList.add('open');
+    feather.replace();
+  }
+
+  function closeWorkoutDetailScreen(){
+    document.getElementById('workoutDetailScreen').classList.remove('open');
+  }
+
   // ---------- "Añadir marca": import a record from before using Strive ----------
   // This does not create a parallel place to manage weights — it only ever
   // appends one more entry to the same workoutLogs array that real workouts
@@ -1953,6 +2220,7 @@
 
   renderRoutinesList();
   renderPersonalRecords();
+  renderTrainingCalendar();
   feather.replace();
 </script>
 </body>
