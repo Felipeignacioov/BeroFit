@@ -245,6 +245,63 @@
   }
   .hero-cta svg{width:17px;height:17px;}
 
+  /* ---------- Home empty state: no routine assigned today ---------- */
+  /* Same footprint as the hero card, but a quiet neutral surface — the
+     point is to invite action, not compete visually with a real workout. */
+  .hero-empty{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:28px;
+    padding:28px 24px;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    margin-top:24px;
+  }
+  .hero-empty-icon{
+    width:48px;height:48px;border-radius:14px;
+    background:var(--accent-soft);border:1px solid var(--accent-soft-border);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:16px;
+  }
+  .hero-empty-icon svg{width:22px;height:22px;color:var(--accent-bright);}
+  .hero-empty-title{
+    font-family:var(--font-display);font-weight:700;font-size:23px;
+    color:var(--text-primary);letter-spacing:-0.3px;margin-bottom:6px;
+  }
+  .hero-empty-subtitle{
+    font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);
+    margin-bottom:22px;
+  }
+  .hero-empty-actions{width:100%;display:flex;flex-direction:column;gap:10px;}
+  .hero-empty-primary{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    height:50px;border-radius:16px;border:none;cursor:pointer;
+    font-family:var(--font-body);font-weight:600;font-size:15px;color:#fff;
+    box-shadow:0 10px 20px -6px rgba(185,28,53,0.45);
+  }
+  .hero-empty-primary svg{width:16px;height:16px;}
+  .hero-empty-secondary{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:transparent;height:50px;border-radius:16px;
+    border:1px solid var(--border-light);cursor:pointer;
+    font-family:var(--font-body);font-weight:600;font-size:15px;color:var(--text-primary);
+  }
+  .hero-empty-secondary svg{width:15px;height:15px;color:var(--text-secondary);}
+
+  /* ---------- Demo toggle (preview helper, not part of the app UI) ---------- */
+  .demo-toggle{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:16px;padding:6px 12px;
+    border:1px dashed var(--border-light);border-radius:999px;
+    font-family:var(--font-body);font-weight:500;font-size:11.5px;
+    color:var(--text-tertiary);cursor:pointer;
+  }
+  .demo-toggle svg{width:12px;height:12px;}
+
   /* ---------- Progress cards (two-up grid) ---------- */
   .progress-grid{
     display:flex;
@@ -441,7 +498,12 @@
         </div>
       </div>
 
-      <div class="hero">
+      <div class="demo-toggle" onclick="toggleHomeDemoState()">
+        <i data-feather="repeat"></i>
+        <span id="demoToggleLabel">Vista previa: con rutina asignada</span>
+      </div>
+
+      <div class="hero" id="heroWithRoutine">
         <div class="hero-watermark">4</div>
         <div class="hero-eyebrow-row">
           <div class="hero-eyebrow-dot"></div>
@@ -454,6 +516,21 @@
           <div class="hero-meta-item"><i data-feather="clock"></i> ~50 min</div>
         </div>
         <button class="hero-cta" onclick="openWorkout()">Iniciar entrenamiento <i data-feather="arrow-right"></i></button>
+      </div>
+
+      <!-- Empty state: shown when the user has no routine assigned for today -->
+      <div class="hero-empty" id="heroEmptyState" style="display:none">
+        <div class="hero-empty-icon"><i data-feather="compass"></i></div>
+        <div class="hero-empty-title">¿Qué quieres entrenar hoy?</div>
+        <div class="hero-empty-subtitle">Explora tus rutinas o crea un entrenamiento.</div>
+        <div class="hero-empty-actions">
+          <button class="hero-empty-primary" onclick="showTab('rutinas')">
+            Ver mis rutinas <i data-feather="arrow-right"></i>
+          </button>
+          <button class="hero-empty-secondary" onclick="showTab('rutinas')">
+            <i data-feather="plus"></i> Crear entrenamiento
+          </button>
+        </div>
       </div>
 
       <div style="height:32px"></div>
@@ -572,11 +649,11 @@
 
       <div class="card">
         <div class="summary-row">
-          <div class="stat"><span class="v">18</span><span class="l">Entrenamientos</span></div>
+          <div class="stat"><span class="v">18</span><span class="l">entrenamientos</span></div>
           <div class="v-divider"></div>
-          <div class="stat"><span class="v">14h 32m</span><span class="l">Tiempo total</span></div>
+          <div class="stat"><span class="v">4 días</span><span class="l">esta semana</span></div>
           <div class="v-divider"></div>
-          <div class="stat"><span class="v">6</span><span class="l">Racha (días)</span></div>
+          <div class="stat"><span class="v">6 días</span><span class="l">racha actual</span></div>
         </div>
       </div>
 
@@ -900,6 +977,19 @@
     colEl.querySelector('.bar').classList.add('selected');
     colEl.querySelector('.day-label').classList.add('selected');
     document.getElementById('chartDayDetail').textContent = dayName + ' · ' + count + ' series';
+  }
+
+  // ---------- Demo toggle: preview Home with vs. without a routine ----------
+  // (This switch exists only to review both states here — in the real app,
+  // Home would simply render one or the other based on whether a routine
+  // is scheduled for today.)
+  let showingEmptyState = false;
+  function toggleHomeDemoState(){
+    showingEmptyState = !showingEmptyState;
+    document.getElementById('heroWithRoutine').style.display = showingEmptyState ? 'none' : 'block';
+    document.getElementById('heroEmptyState').style.display = showingEmptyState ? 'flex' : 'none';
+    document.getElementById('demoToggleLabel').textContent =
+      showingEmptyState ? 'Vista previa: sin rutina asignada' : 'Vista previa: con rutina asignada';
   }
 
   feather.replace();
