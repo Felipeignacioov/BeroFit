@@ -264,7 +264,7 @@
   .progress-value .unit{font-family:var(--font-body);font-size:14px;color:var(--text-tertiary);margin-left:3px;}
   .progress-delta{display:flex;align-items:center;gap:3px;margin-top:5px;font-family:var(--font-body);font-weight:600;font-size:12px;}
   .progress-delta svg{width:11px;height:11px;}
-  .delta-up{color:var(--accent-bright);}
+  .delta-up{color:#4ADE80;}
   .delta-flat{color:var(--text-tertiary);}
   /* Small, quiet trend indicator — a hint of evolution, not a chart */
   .mini-bars{display:flex;align-items:flex-end;gap:3px;height:26px;flex-shrink:0;}
@@ -310,15 +310,17 @@
   /* ---------- Progreso screen ---------- */
   .summary-row{display:flex;align-items:center;justify-content:space-between;}
   .chart{display:flex;align-items:flex-end;justify-content:space-between;height:110px;margin-top:4px;}
-  .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;}
+  .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;cursor:pointer;}
   .bar-track{flex:1;display:flex;align-items:flex-end;margin-bottom:10px;}
-  .bar{width:16px;border-radius:6px;background:var(--surface-high);}
+  .bar{width:16px;border-radius:6px;background:var(--surface-high);transition:background 0.15s ease, opacity 0.15s ease;}
   .bar.today{background:var(--accent);}
+  .bar.selected{background:var(--accent-bright);}
   .day-label{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);}
   .day-label.today{color:var(--accent-bright);font-weight:600;}
-  .legend{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:12px;}
-  .legend-dot{width:7px;height:7px;border-radius:4px;background:var(--accent);}
-  .legend-text{font-family:var(--font-body);font-size:12px;color:var(--text-tertiary);}
+  .day-label.selected{color:var(--accent-bright);font-weight:600;}
+  .chart-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .week-total{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);}
+  .day-detail{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--accent-bright);}
   .pr-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);}
   .pr-row:last-child{border-bottom:none;}
   .pr-icon{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -579,18 +581,21 @@
       </div>
 
       <div style="height:28px"></div>
-      <div class="section-header"><span class="section-title">Volumen semanal</span></div>
+      <div class="section-header"><span class="section-title">Actividad semanal</span></div>
       <div class="card">
         <div class="chart">
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:52%"></div></div><span class="day-label">L</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:38%"></div></div><span class="day-label">M</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:66%"></div></div><span class="day-label">X</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:32%"></div></div><span class="day-label">J</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar today" style="height:100%"></div></div><span class="day-label today">V</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:46%"></div></div><span class="day-label">S</span></div>
-          <div class="bar-col"><div class="bar-track"><div class="bar" style="height:3px"></div></div><span class="day-label">D</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Lunes',12)"><div class="bar-track"><div class="bar" style="height:55%"></div></div><span class="day-label">L</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Martes',0)"><div class="bar-track"><div class="bar" style="height:3px"></div></div><span class="day-label">M</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Miércoles',18)"><div class="bar-track"><div class="bar" style="height:82%"></div></div><span class="day-label">X</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Jueves',15)"><div class="bar-track"><div class="bar" style="height:68%"></div></div><span class="day-label">J</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Viernes',0)"><div class="bar-track"><div class="bar today" style="height:3px"></div></div><span class="day-label today">V</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Sábado',22)"><div class="bar-track"><div class="bar" style="height:100%"></div></div><span class="day-label">S</span></div>
+          <div class="bar-col" onclick="showDayDetail(this,'Domingo',0)"><div class="bar-track"><div class="bar" style="height:3px"></div></div><span class="day-label">D</span></div>
         </div>
-        <div class="legend"><div class="legend-dot"></div><span class="legend-text">Hoy</span></div>
+        <div class="chart-footer">
+          <span class="week-total">68 series esta semana</span>
+          <span class="day-detail" id="chartDayDetail"></span>
+        </div>
       </div>
 
       <div style="height:28px"></div>
@@ -885,6 +890,16 @@
   function skipRest(){
     clearInterval(restInterval);
     document.getElementById('restBanner').style.display = 'none';
+  }
+
+  // ---------- Weekly activity chart: tap a bar to see that day's detail ----------
+  function showDayDetail(colEl, dayName, count){
+    const chart = colEl.parentElement;
+    chart.querySelectorAll('.bar').forEach(b => b.classList.remove('selected'));
+    chart.querySelectorAll('.day-label').forEach(l => l.classList.remove('selected'));
+    colEl.querySelector('.bar').classList.add('selected');
+    colEl.querySelector('.day-label').classList.add('selected');
+    document.getElementById('chartDayDetail').textContent = dayName + ' · ' + count + ' series';
   }
 
   feather.replace();
