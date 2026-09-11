@@ -475,6 +475,187 @@
     box-shadow:0 10px 20px -5px rgba(185,28,53,0.45);
   }
   .primary-btn svg{width:17px;height:17px;}
+
+  /* ================================================================
+     Create-routine flow: action sheet + exercise picker + BeroFit goal picker
+     ================================================================ */
+
+  /* ---------- Backdrop shared by the action sheet ---------- */
+  .sheet-backdrop{
+    position:absolute;inset:0;background:rgba(0,0,0,0.55);
+    opacity:0;pointer-events:none;transition:opacity 0.25s ease;
+    z-index:150;
+  }
+  .sheet-backdrop.open{opacity:1;pointer-events:auto;}
+
+  /* ---------- Action sheet: "Crear mi rutina" vs "Crear rutina con BeroFit" ---------- */
+  .action-sheet{
+    position:absolute;left:0;right:0;bottom:0;
+    background:var(--bg-elevated);
+    border-top-left-radius:28px;border-top-right-radius:28px;
+    border:1px solid var(--border-light);border-bottom:none;
+    padding:10px 20px calc(env(safe-area-inset-bottom, 16px) + 20px) 20px;
+    transform:translateY(100%);
+    transition:transform 0.3s cubic-bezier(.32,.72,0,1);
+    z-index:151;
+  }
+  .action-sheet.open{transform:translateY(0);}
+  .sheet-handle{
+    width:36px;height:4px;border-radius:2px;background:var(--border-light);
+    margin:6px auto 18px auto;
+  }
+  .sheet-title{
+    font-family:var(--font-display);font-weight:600;font-size:18px;
+    color:var(--text-primary);margin-bottom:14px;
+  }
+  .sheet-option{
+    display:flex;align-items:center;gap:14px;
+    background:var(--surface);border:1px solid var(--border);border-radius:20px;
+    padding:16px;margin-bottom:10px;cursor:pointer;
+  }
+  .sheet-option-icon{
+    width:44px;height:44px;border-radius:14px;flex-shrink:0;
+    background:var(--accent-soft);border:1px solid var(--accent-soft-border);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sheet-option-icon svg{width:19px;height:19px;color:var(--accent-bright);}
+  .sheet-option-title{font-family:var(--font-display);font-weight:600;font-size:15.5px;color:var(--text-primary);margin-bottom:2px;}
+  .sheet-option-desc{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);}
+  .sheet-cancel{
+    width:100%;height:50px;border-radius:16px;background:var(--surface-high);
+    border:none;color:var(--text-secondary);font-family:var(--font-body);font-weight:600;
+    font-size:14.5px;cursor:pointer;margin-top:4px;
+  }
+
+  /* ---------- Shared: full-screen flow overlays ---------- */
+  .flow-overlay{
+    position:absolute;inset:0;background:var(--bg);
+    display:flex;flex-direction:column;
+    transform:translateY(100%);
+    transition:transform 0.32s cubic-bezier(.32,.72,0,1);
+    z-index:140;
+  }
+  .flow-overlay.open{transform:translateY(0);}
+  .flow-header{
+    flex-shrink:0;
+    display:flex;align-items:flex-start;justify-content:space-between;
+    padding:calc(env(safe-area-inset-top, 14px) + 10px) 20px 0 20px;
+  }
+  .flow-title{font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--text-primary);letter-spacing:-0.3px;max-width:250px;}
+  .flow-subtitle{font-family:var(--font-body);font-size:14px;color:var(--text-secondary);margin-top:6px;max-width:280px;}
+  .flow-body{flex:1;overflow-y:auto;padding:20px 20px 0 20px;scrollbar-width:none;}
+  .flow-body::-webkit-scrollbar{display:none;}
+  .flow-footer{
+    flex-shrink:0;border-top:1px solid var(--border);
+    padding:14px 20px calc(env(safe-area-inset-bottom, 14px) + 18px) 20px;
+    background:var(--bg);
+  }
+
+  /* ---------- Exercise picker: grouped by muscle group ---------- */
+  .muscle-section{margin-bottom:26px;}
+  .muscle-section-title{
+    font-family:var(--font-body);font-weight:700;font-size:12px;letter-spacing:1px;
+    color:var(--text-tertiary);margin-bottom:12px;
+  }
+  .exercise-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .exercise-card{
+    position:relative;
+    background:var(--surface);border:1px solid var(--border);border-radius:18px;
+    padding:14px;cursor:pointer;transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .exercise-card.selected{
+    background:var(--accent-soft);border-color:var(--accent-soft-border);
+  }
+  .exercise-card-icon{
+    width:38px;height:38px;border-radius:12px;background:var(--surface-high);
+    display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+  }
+  .exercise-card.selected .exercise-card-icon{background:var(--accent-dim);}
+  .exercise-card-icon svg{width:17px;height:17px;color:var(--text-secondary);}
+  .exercise-card.selected .exercise-card-icon svg{color:#fff;}
+  .exercise-card-name{font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--text-primary);line-height:1.25;}
+  .exercise-check{
+    position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:999px;
+    border:1.5px solid var(--border-light);background:var(--surface);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .exercise-card.selected .exercise-check{background:var(--accent-bright);border-color:var(--accent-bright);}
+  .exercise-check svg{width:11px;height:11px;color:#fff;}
+
+  .routine-name-input{
+    width:100%;height:48px;border-radius:14px;
+    background:var(--surface-high);border:1px solid var(--border-light);
+    color:var(--text-primary);font-family:var(--font-body);font-weight:500;font-size:14.5px;
+    padding:0 16px;margin-bottom:12px;outline:none;
+  }
+  .routine-name-input::placeholder{color:var(--text-tertiary);}
+  .flow-footer-meta{
+    font-family:var(--font-body);font-weight:500;font-size:12.5px;color:var(--text-tertiary);
+    margin-bottom:10px;
+  }
+  .flow-footer-meta b{color:var(--accent-bright);font-weight:700;}
+  .flow-primary-btn{
+    width:100%;height:54px;border-radius:16px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--font-body);font-weight:600;font-size:15.5px;color:#fff;
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    box-shadow:0 10px 20px -6px rgba(185,28,53,0.45);
+  }
+  .flow-primary-btn:disabled{
+    opacity:0.4;box-shadow:none;cursor:not-allowed;
+  }
+  .flow-primary-btn svg{width:16px;height:16px;}
+
+  /* ---------- BeroFit: goal picker ---------- */
+  .goal-option{
+    display:flex;align-items:center;gap:14px;
+    background:var(--surface);border:1px solid var(--border);border-radius:18px;
+    padding:16px;margin-bottom:10px;cursor:pointer;
+  }
+  .goal-option.selected{border-color:var(--accent-soft-border);background:var(--accent-soft);}
+  .goal-icon{
+    width:42px;height:42px;border-radius:13px;flex-shrink:0;
+    background:var(--surface-high);display:flex;align-items:center;justify-content:center;
+  }
+  .goal-option.selected .goal-icon{background:var(--accent-dim);}
+  .goal-icon svg{width:18px;height:18px;color:var(--text-secondary);}
+  .goal-option.selected .goal-icon svg{color:#fff;}
+  .goal-label{flex:1;font-family:var(--font-body);font-weight:600;font-size:14.5px;color:var(--text-primary);}
+  .goal-radio{
+    width:20px;height:20px;border-radius:999px;border:1.5px solid var(--border-light);
+    flex-shrink:0;position:relative;
+  }
+  .goal-option.selected .goal-radio{border-color:var(--accent-bright);}
+  .goal-option.selected .goal-radio::after{
+    content:'';position:absolute;inset:3px;border-radius:999px;background:var(--accent-bright);
+  }
+
+  /* ---------- Success toast + new-routine highlight ---------- */
+  .toast{
+    position:absolute;left:20px;right:20px;
+    bottom:calc(env(safe-area-inset-bottom, 10px) + 82px);
+    background:var(--surface-high);border:1px solid var(--border-light);
+    border-radius:16px;padding:14px 16px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 12px 24px -8px rgba(0,0,0,0.5);
+    transform:translateY(16px);opacity:0;pointer-events:none;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+    z-index:170;
+  }
+  .toast.open{transform:translateY(0);opacity:1;}
+  .toast-icon{
+    width:28px;height:28px;border-radius:999px;background:var(--success);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .toast-icon svg{width:14px;height:14px;color:#0B0B0F;}
+  .toast-text{font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--text-primary);}
+  @keyframes newRoutinePulse{
+    0%{box-shadow:0 0 0 0 rgba(224,45,72,0.5);}
+    100%{box-shadow:0 0 0 14px rgba(224,45,72,0);}
+  }
+  .routine-card.just-created{animation:newRoutinePulse 1s ease-out 2;}
 </style>
 </head>
 <body>
@@ -600,42 +781,14 @@
       <div class="rutinas-header">
         <div>
           <div class="page-title">Mis rutinas</div>
-          <div class="page-subtitle">3 rutinas activas</div>
+          <div class="page-subtitle" id="rutinasCountLabel">3 rutinas activas</div>
         </div>
-        <button class="add-btn"><i data-feather="plus"></i></button>
+        <button class="add-btn" onclick="openCreateSheet()"><i data-feather="plus"></i></button>
       </div>
 
       <div style="height:24px"></div>
 
-      <div class="routine-card" onclick="openWorkout()">
-        <div class="routine-icon"><i data-feather="zap"></i></div>
-        <div class="routine-info">
-          <div class="routine-name">Push</div>
-          <div class="routine-meta">4 ejercicios · ~50 min</div>
-          <div class="routine-last">Última vez: Hace 2 días</div>
-        </div>
-        <i data-feather="chevron-right" class="chev"></i>
-      </div>
-
-      <div class="routine-card">
-        <div class="routine-icon"><i data-feather="zap"></i></div>
-        <div class="routine-info">
-          <div class="routine-name">Pull</div>
-          <div class="routine-meta">5 ejercicios · ~55 min</div>
-          <div class="routine-last">Última vez: Hace 4 días</div>
-        </div>
-        <i data-feather="chevron-right" class="chev"></i>
-      </div>
-
-      <div class="routine-card">
-        <div class="routine-icon"><i data-feather="zap"></i></div>
-        <div class="routine-info">
-          <div class="routine-name">Legs</div>
-          <div class="routine-meta">5 ejercicios · ~60 min</div>
-          <div class="routine-last">Última vez: Hace 6 días</div>
-        </div>
-        <i data-feather="chevron-right" class="chev"></i>
-      </div>
+      <div id="rutinasListContainer"></div>
 
       <div style="height:24px"></div>
     </div>
@@ -794,6 +947,77 @@
       </div>
       <button class="primary-btn" id="wkPrimaryBtn" onclick="onPrimaryAction()">Completar serie <i data-feather="check"></i></button>
     </div>
+  </div>
+
+  <!-- ============ CREATE ROUTINE: ACTION SHEET ============ -->
+  <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeCreateSheet()"></div>
+  <div class="action-sheet" id="createSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Crear rutina</div>
+
+    <div class="sheet-option" onclick="openExercisePicker()">
+      <div class="sheet-option-icon"><i data-feather="edit-3"></i></div>
+      <div>
+        <div class="sheet-option-title">Crear mi rutina</div>
+        <div class="sheet-option-desc">Elige tú mismo los ejercicios</div>
+      </div>
+    </div>
+
+    <div class="sheet-option" onclick="openGoalPicker()">
+      <div class="sheet-option-icon"><i data-feather="cpu"></i></div>
+      <div>
+        <div class="sheet-option-title">Crear rutina con BeroFit</div>
+        <div class="sheet-option-desc">Te generamos una rutina según tu objetivo</div>
+      </div>
+    </div>
+
+    <button class="sheet-cancel" onclick="closeCreateSheet()">Cancelar</button>
+  </div>
+
+  <!-- ============ CREATE MY ROUTINE: EXERCISE PICKER ============ -->
+  <div class="flow-overlay" id="exercisePickerScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title">Elige tus ejercicios</div>
+        <div class="flow-subtitle">Organizados por grupo muscular. Tócalos para añadirlos.</div>
+      </div>
+      <button class="close-btn" onclick="closeExercisePicker()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body" id="exercisePickerBody"></div>
+
+    <div class="flow-footer">
+      <input type="text" class="routine-name-input" id="routineNameInput" placeholder="Nombre de tu rutina" />
+      <div class="flow-footer-meta"><b id="selectedCountLabel">0</b> ejercicios seleccionados</div>
+      <button class="flow-primary-btn" id="createRoutineBtn" onclick="saveCustomRoutine()" disabled>
+        Crear rutina <i data-feather="arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ CREATE WITH BEROFIT: GOAL PICKER ============ -->
+  <div class="flow-overlay" id="goalPickerScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title">¿Qué quieres conseguir con tu entrenamiento?</div>
+        <div class="flow-subtitle">BeroFit generará una rutina personalizada para ti.</div>
+      </div>
+      <button class="close-btn" onclick="closeGoalPicker()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body" id="goalPickerBody"></div>
+
+    <div class="flow-footer">
+      <button class="flow-primary-btn" id="generateRoutineBtn" onclick="generateBeroFitRoutine()" disabled>
+        Generar rutina <i data-feather="cpu"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ SUCCESS TOAST ============ -->
+  <div class="toast" id="successToast">
+    <div class="toast-icon"><i data-feather="check"></i></div>
+    <div class="toast-text" id="successToastText">Rutina creada</div>
   </div>
 
 </div>
@@ -992,6 +1216,251 @@
       showingEmptyState ? 'Vista previa: sin rutina asignada' : 'Vista previa: con rutina asignada';
   }
 
+  // ================================================================
+  // RUTINAS: data model + create-routine flows (Crear mi rutina / BeroFit)
+  // ================================================================
+
+  // ---------- Routines list (real state — pushing here re-renders the list) ----------
+  let routines = [
+    { id:'push', name:'Push', exerciseCount:4, estimatedMinutes:50, lastPerformed:'Hace 2 días', clickable:true },
+    { id:'pull', name:'Pull', exerciseCount:5, estimatedMinutes:55, lastPerformed:'Hace 4 días', clickable:false },
+    { id:'legs', name:'Legs', exerciseCount:5, estimatedMinutes:60, lastPerformed:'Hace 6 días', clickable:false },
+  ];
+
+  function renderRoutinesList(highlightId){
+    const container = document.getElementById('rutinasListContainer');
+    container.innerHTML = '';
+    routines.forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'routine-card' + (r.id === highlightId ? ' just-created' : '');
+      el.innerHTML =
+        '<div class="routine-icon"><i data-feather="zap"></i></div>' +
+        '<div class="routine-info">' +
+          '<div class="routine-name">' + r.name + '</div>' +
+          '<div class="routine-meta">' + r.exerciseCount + ' ejercicios · ~' + r.estimatedMinutes + ' min</div>' +
+          '<div class="routine-last">' + (r.lastPerformed ? 'Última vez: ' + r.lastPerformed : 'Recién creada') + '</div>' +
+        '</div>' +
+        '<i data-feather="chevron-right" class="chev"></i>';
+      if(r.clickable){ el.addEventListener('click', openWorkout); }
+      container.appendChild(el);
+    });
+    const n = routines.length;
+    document.getElementById('rutinasCountLabel').textContent = n + (n === 1 ? ' rutina activa' : ' rutinas activas');
+    feather.replace();
+  }
+
+  // ---------- Exercise catalog, grouped by muscle group ----------
+  // Three exercises per group today. Adding a fourth later is just another
+  // object in the array — the picker screen re-renders from this list, so
+  // nothing about the layout needs to change.
+  const MUSCLE_GROUPS = [
+    { key:'espalda', label:'ESPALDA', icon:'chevrons-up', exercises:[
+      { id:'b1', name:'Dominadas' },
+      { id:'b2', name:'Remo con barra' },
+      { id:'b3', name:'Jalón al pecho' },
+    ]},
+    { key:'pecho', label:'PECHO', icon:'shield', exercises:[
+      { id:'c1', name:'Press banca' },
+      { id:'c2', name:'Press inclinado mancuerna' },
+      { id:'c3', name:'Aperturas con mancuerna' },
+    ]},
+    { key:'piernas', label:'PIERNAS', icon:'trending-up', exercises:[
+      { id:'l1', name:'Sentadilla' },
+      { id:'l2', name:'Peso muerto rumano' },
+      { id:'l3', name:'Prensa' },
+    ]},
+    { key:'hombros', label:'HOMBROS', icon:'triangle', exercises:[
+      { id:'s1', name:'Press militar' },
+      { id:'s2', name:'Elevaciones laterales' },
+      { id:'s3', name:'Face pull' },
+    ]},
+    { key:'biceps', label:'BÍCEPS', icon:'zap', exercises:[
+      { id:'bi1', name:'Curl de bíceps' },
+      { id:'bi2', name:'Curl martillo' },
+      { id:'bi3', name:'Curl concentrado' },
+    ]},
+    { key:'triceps', label:'TRÍCEPS', icon:'activity', exercises:[
+      { id:'t1', name:'Extensión de tríceps' },
+      { id:'t2', name:'Fondos en banco' },
+      { id:'t3', name:'Press francés' },
+    ]},
+  ];
+
+  // ---------- Action sheet ----------
+  function openCreateSheet(){
+    document.getElementById('sheetBackdrop').classList.add('open');
+    document.getElementById('createSheet').classList.add('open');
+  }
+  function closeCreateSheet(){
+    document.getElementById('sheetBackdrop').classList.remove('open');
+    document.getElementById('createSheet').classList.remove('open');
+  }
+
+  // ---------- Flow 1: "Crear mi rutina" — manual exercise picker ----------
+  let selectedExerciseIds = new Set();
+
+  function openExercisePicker(){
+    closeCreateSheet();
+    selectedExerciseIds = new Set();
+    document.getElementById('routineNameInput').value = '';
+    renderExercisePicker();
+    document.getElementById('exercisePickerScreen').classList.add('open');
+  }
+  function closeExercisePicker(){
+    document.getElementById('exercisePickerScreen').classList.remove('open');
+  }
+
+  function renderExercisePicker(){
+    const body = document.getElementById('exercisePickerBody');
+    body.innerHTML = MUSCLE_GROUPS.map(group => {
+      const cards = group.exercises.map(ex => {
+        const isSelected = selectedExerciseIds.has(ex.id);
+        return (
+          '<div class="exercise-card' + (isSelected ? ' selected' : '') + '" onclick="toggleExercise(\'' + ex.id + '\')">' +
+            '<div class="exercise-card-icon"><i data-feather="' + group.icon + '"></i></div>' +
+            '<div class="exercise-card-name">' + ex.name + '</div>' +
+            '<div class="exercise-check">' + (isSelected ? '<i data-feather="check"></i>' : '') + '</div>' +
+          '</div>'
+        );
+      }).join('');
+      return (
+        '<div class="muscle-section">' +
+          '<div class="muscle-section-title">' + group.label + '</div>' +
+          '<div class="exercise-grid">' + cards + '</div>' +
+        '</div>'
+      );
+    }).join('');
+    updateExercisePickerFooter();
+    feather.replace();
+  }
+
+  function toggleExercise(id){
+    if(selectedExerciseIds.has(id)) selectedExerciseIds.delete(id);
+    else selectedExerciseIds.add(id);
+    renderExercisePicker();
+  }
+
+  function updateExercisePickerFooter(){
+    const count = selectedExerciseIds.size;
+    document.getElementById('selectedCountLabel').textContent = count;
+    document.getElementById('createRoutineBtn').disabled = count === 0;
+  }
+
+  function saveCustomRoutine(){
+    if(selectedExerciseIds.size === 0) return;
+    const typedName = document.getElementById('routineNameInput').value.trim();
+    const name = typedName || 'Mi rutina';
+    const exerciseCount = selectedExerciseIds.size;
+    // Simple duration estimate for now: ~9 min per exercise (warm-up + sets + rest).
+    const estimatedMinutes = Math.max(20, Math.round(exerciseCount * 9));
+    const id = 'custom-' + Date.now();
+
+    routines.push({ id, name, exerciseCount, estimatedMinutes, lastPerformed:null, clickable:false });
+
+    closeExercisePicker();
+    showTab('rutinas');
+    renderRoutinesList(id);
+    showSuccessToast('Rutina "' + name + '" creada');
+  }
+
+  // ---------- Flow 2: "Crear rutina con BeroFit" — goal-based generation ----------
+  const GOALS = [
+    { key:'muscle',    label:'Ganar músculo',            icon:'trending-up' },
+    { key:'strength',  label:'Ganar fuerza',              icon:'zap' },
+    { key:'endurance', label:'Mejorar resistencia',       icon:'activity' },
+    { key:'fatloss',   label:'Perder grasa',              icon:'trending-down' },
+    { key:'fitness',   label:'Mejorar condición física',  icon:'heart' },
+  ];
+
+  let selectedGoal = null;
+
+  function openGoalPicker(){
+    closeCreateSheet();
+    selectedGoal = null;
+    renderGoalPicker();
+    document.getElementById('goalPickerScreen').classList.add('open');
+  }
+  function closeGoalPicker(){
+    document.getElementById('goalPickerScreen').classList.remove('open');
+  }
+
+  function renderGoalPicker(){
+    const body = document.getElementById('goalPickerBody');
+    body.innerHTML = GOALS.map(g => (
+      '<div class="goal-option' + (selectedGoal === g.key ? ' selected' : '') + '" onclick="selectGoal(\'' + g.key + '\')">' +
+        '<div class="goal-icon"><i data-feather="' + g.icon + '"></i></div>' +
+        '<div class="goal-label">' + g.label + '</div>' +
+        '<div class="goal-radio"></div>' +
+      '</div>'
+    )).join('');
+    document.getElementById('generateRoutineBtn').disabled = !selectedGoal;
+    feather.replace();
+  }
+
+  function selectGoal(key){
+    selectedGoal = key;
+    renderGoalPicker();
+  }
+
+  // User-facing personalization today is just the goal. The object and the
+  // function signature below are shaped so level, days available, session
+  // duration, equipment, experience and priority muscle groups can be added
+  // later as extra inputs without reworking how a routine gets built.
+  const userPreferences = {
+    goal: null,
+    level: null,
+    daysAvailable: null,
+    sessionDuration: null,
+    equipment: null,
+    experience: null,
+    priorityMuscleGroups: null,
+  };
+
+  const GOAL_ROUTINE_TEMPLATES = {
+    muscle:    { name:'Hipertrofia BeroFit', exerciseCount:5, estimatedMinutes:55 },
+    strength:  { name:'Fuerza BeroFit',      exerciseCount:4, estimatedMinutes:60 },
+    endurance: { name:'Resistencia BeroFit', exerciseCount:7, estimatedMinutes:45 },
+    fatloss:   { name:'Quema BeroFit',       exerciseCount:6, estimatedMinutes:40 },
+    fitness:   { name:'Full Body BeroFit',   exerciseCount:5, estimatedMinutes:45 },
+  };
+
+  function generateRoutineForGoal(goalKey, preferences){
+    // `preferences` is accepted but unused beyond `goal` for now — reserved
+    // for the future personalization variables listed above.
+    const template = GOAL_ROUTINE_TEMPLATES[goalKey] || GOAL_ROUTINE_TEMPLATES.fitness;
+    return {
+      id: 'berofit-' + Date.now(),
+      name: template.name,
+      exerciseCount: template.exerciseCount,
+      estimatedMinutes: template.estimatedMinutes,
+      lastPerformed: null,
+      clickable: false,
+    };
+  }
+
+  function generateBeroFitRoutine(){
+    if(!selectedGoal) return;
+    userPreferences.goal = selectedGoal;
+    const routine = generateRoutineForGoal(selectedGoal, userPreferences);
+    routines.push(routine);
+
+    closeGoalPicker();
+    showTab('rutinas');
+    renderRoutinesList(routine.id);
+    showSuccessToast('BeroFit creó "' + routine.name + '"');
+  }
+
+  // ---------- Success toast ----------
+  let toastTimeout;
+  function showSuccessToast(text){
+    const toast = document.getElementById('successToast');
+    document.getElementById('successToastText').textContent = text;
+    toast.classList.add('open');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('open'), 2600);
+  }
+
+  renderRoutinesList();
   feather.replace();
 </script>
 </body>
