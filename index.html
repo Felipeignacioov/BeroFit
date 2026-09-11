@@ -955,7 +955,7 @@
   <div class="workout-overlay" id="workoutOverlay">
     <div class="workout-header">
       <div>
-        <div class="workout-routine">Push</div>
+        <div class="workout-routine" id="wkRoutineName">Push</div>
         <div class="workout-progress-label" id="wkExerciseLabel">Ejercicio 1 de 4</div>
       </div>
       <button class="close-btn" onclick="closeWorkout()"><i data-feather="x"></i></button>
@@ -1149,7 +1149,11 @@
 
   // ---------- Workout mode state ----------
   const REST_SECONDS = 90;
-  const workout = [
+  // This is the default/demo state used when Home's hero card starts today's
+  // workout directly. When a routine is started from its preview screen
+  // (startWorkoutFromRoutine), this gets rebuilt from that routine's own
+  // exercises instead — each routine drives its own workout content.
+  let workout = [
     { name:'Press banca', sets:[
       {weight:70, reps:8, completed:true},
       {weight:70, reps:8, completed:true},
@@ -1175,8 +1179,10 @@
   let exIndex = 0;
   let restRemaining = null;
   let restInterval = null;
+  let activeRoutineName = 'Push';
 
   function openWorkout(){
+    document.getElementById('wkRoutineName').textContent = activeRoutineName;
     document.getElementById('workoutOverlay').classList.add('open');
     renderWorkout();
     feather.replace();
@@ -1434,6 +1440,84 @@
     const group = MUSCLE_GROUPS.find(g => g.exercises.some(ex => ex.name === exerciseName));
     if(!group) return null;
     return group.label.charAt(0) + group.label.slice(1).toLowerCase();
+  }
+
+  // ---------- Routine preview: "Ver rutina" ≠ "Entrenar rutina" ----------
+  // Tapping any routine in "Mis rutinas" opens this first. It only ever
+  // reads the routine's own `exercises` — nothing here touches the active
+  // workout state. The active workout only gets built if/when the user
+  // explicitly taps "Iniciar entrenamiento" below.
+  let currentPreviewRoutineId = null;
+
+  function openRoutineDetail(routineId){
+    const routine = routines.find(r => r.id === routineId);
+    if(!routine) return;
+    currentPreviewRoutineId = routineId;
+
+    document.getElementById('routineDetailName').textContent = routine.name;
+
+    const groups = [];
+    (routine.exercises || []).forEach(ex => {
+      const group = findMuscleGroupLabelForExercise(ex.name);
+      if(group && groups.indexOf(group) === -1) groups.push(group);
+    });
+    document.getElementById('routineDetailSubtitle').textContent =
+      groups.length ? groups.join(' · ') : (routine.exerciseCount + ' ejercicios');
+
+    const body = document.getElementById('routineDetailBody');
+    body.innerHTML = (routine.exercises || []).map((ex, i) => {
+      const hasWeight = ex.weight !== undefined && ex.weight !== null;
+      return (
+        '<div class="routine-ex-row">' +
+          '<div class="routine-ex-index">' + (i + 1) + '</div>' +
+          '<div class="routine-ex-info">' +
+            '<div class="routine-ex-name">' + ex.name + '</div>' +
+            '<div class="routine-ex-meta">' + ex.sets + ' series' + (ex.repsRange ? ' · ' + ex.repsRange + ' reps' : '') + '</div>' +
+          '</div>' +
+          (hasWeight ? '<div class="routine-ex-weight">' + formatWeightEs(ex.weight) + ' kg</div>' : '') +
+        '</div>'
+      );
+    }).join('');
+
+    document.getElementById('routineDetailScreen').classList.add('open');
+    feather.replace();
+  }
+
+  function closeRoutineDetail(){
+    document.getElementById('routineDetailScreen').classList.remove('open');
+  }
+
+  // "6-10" -> 10, "8" -> 8. Falls back to a reasonable default if unparsable.
+  function parseTargetReps(repsRange){
+    const match = String(repsRange || '').match(/(\d+)(?:\D+(\d+))?/);
+    if(!match) return 10;
+    return match[2] ? parseInt(match[2], 10) : parseInt(match[1], 10);
+  }
+
+  function buildSetsForExercise(ex){
+    const targetReps = parseTargetReps(ex.repsRange);
+    const sets = [];
+    for(let i = 0; i < ex.sets; i++){
+      sets.push({ weight: ex.weight || 0, reps: targetReps, completed: false });
+    }
+    return sets;
+  }
+
+  // The only path into the active workout screen. Builds a fresh session
+  // from this specific routine's exercises — Routine A and Routine B never
+  // share or leak state, since `workout` is fully rebuilt here every time.
+  function startWorkoutFromRoutine(routineId){
+    const routine = routines.find(r => r.id === routineId);
+    if(!routine || !routine.exercises || routine.exercises.length === 0) return;
+
+    workout = routine.exercises.map(ex => ({ name: ex.name, sets: buildSetsForExercise(ex) }));
+    exIndex = 0;
+    clearInterval(restInterval);
+    restRemaining = null;
+    activeRoutineName = routine.name;
+
+    closeRoutineDetail();
+    openWorkout();
   }
 
   // ---------- Action sheet ----------
