@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Forge</title>
+<title>Strive</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
@@ -246,10 +246,12 @@
   .hero-cta svg{width:17px;height:17px;}
 
   /* ---------- Home empty state: no routine assigned today ---------- */
-  /* Same footprint as the hero card, but a quiet neutral surface — the
-     point is to invite action, not compete visually with a real workout. */
+  /* Same footprint and depth as the approved hero — dark gradient surface,
+     soft elevation, faint watermark — but red stays only in the CTA. */
   .hero-empty{
-    background:var(--surface);
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg,#1B1B22,#0F0F13);
     border:1px solid var(--border);
     border-radius:28px;
     padding:28px 24px;
@@ -259,23 +261,39 @@
     align-items:flex-start;
     justify-content:center;
     margin-top:24px;
+    box-shadow:0 14px 30px -12px rgba(0,0,0,0.55);
   }
+  .hero-empty::before{
+    content:'';
+    position:absolute;top:0;left:24px;right:24px;height:1px;
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.08),rgba(255,255,255,0));
+  }
+  .hero-empty-watermark{
+    position:absolute;right:-14px;top:-30px;
+    font-size:130px;color:rgba(255,255,255,0.025);
+    pointer-events:none;line-height:1;
+  }
+  .hero-empty-watermark svg{width:150px;height:150px;stroke-width:1;}
+  .hero-empty-eyebrow-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative;}
+  .hero-empty-eyebrow-dot{width:6px;height:6px;border-radius:3px;background:var(--text-tertiary);flex-shrink:0;}
+  .hero-empty-eyebrow{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);position:relative;}
   .hero-empty-icon{
     width:48px;height:48px;border-radius:14px;
     background:var(--accent-soft);border:1px solid var(--accent-soft-border);
     display:flex;align-items:center;justify-content:center;
-    margin-bottom:16px;
+    margin-bottom:16px;position:relative;
   }
   .hero-empty-icon svg{width:22px;height:22px;color:var(--accent-bright);}
   .hero-empty-title{
-    font-family:var(--font-display);font-weight:700;font-size:23px;
+    font-family:var(--font-display);font-weight:700;font-size:25px;
     color:var(--text-primary);letter-spacing:-0.3px;margin-bottom:6px;
+    position:relative;
   }
   .hero-empty-subtitle{
     font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);
-    margin-bottom:22px;
+    margin-bottom:22px;position:relative;
   }
-  .hero-empty-actions{width:100%;display:flex;flex-direction:column;gap:10px;}
+  .hero-empty-actions{width:100%;display:flex;flex-direction:column;gap:10px;position:relative;}
   .hero-empty-primary{
     display:flex;align-items:center;justify-content:center;gap:8px;
     background:linear-gradient(135deg,var(--accent-bright),var(--accent));
@@ -286,7 +304,7 @@
   .hero-empty-primary svg{width:16px;height:16px;}
   .hero-empty-secondary{
     display:flex;align-items:center;justify-content:center;gap:8px;
-    background:transparent;height:50px;border-radius:16px;
+    background:rgba(255,255,255,0.03);height:50px;border-radius:16px;
     border:1px solid var(--border-light);cursor:pointer;
     font-family:var(--font-body);font-weight:600;font-size:15px;color:var(--text-primary);
   }
@@ -384,7 +402,10 @@
   .pr-icon svg{width:16px;height:16px;color:var(--accent-bright);}
   .pr-name{font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-primary);}
   .pr-date{font-family:var(--font-body);font-weight:500;font-size:12px;color:var(--text-tertiary);margin-top:2px;}
-  .pr-value{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--text-primary);margin-left:auto;}
+  .pr-delta{display:flex;align-items:center;gap:3px;margin-left:auto;font-family:var(--font-body);font-weight:600;font-size:13px;flex-shrink:0;}
+  .pr-delta svg{width:12px;height:12px;}
+  .pr-delta-up{color:#4ADE80;}
+  .pr-delta-flat{color:var(--text-tertiary);font-weight:500;}
 
   /* ---------- Perfil ---------- */
   .profile-header{text-align:center;padding-top:6px;}
@@ -477,7 +498,7 @@
   .primary-btn svg{width:17px;height:17px;}
 
   /* ================================================================
-     Create-routine flow: action sheet + exercise picker + BeroFit goal picker
+     Create-routine flow: action sheet + exercise picker + Strive goal picker
      ================================================================ */
 
   /* ---------- Backdrop shared by the action sheet ---------- */
@@ -488,7 +509,7 @@
   }
   .sheet-backdrop.open{opacity:1;pointer-events:auto;}
 
-  /* ---------- Action sheet: "Crear mi rutina" vs "Crear rutina con BeroFit" ---------- */
+  /* ---------- Action sheet: "Crear mi rutina" vs "Crear rutina con Strive" ---------- */
   .action-sheet{
     position:absolute;left:0;right:0;bottom:0;
     background:var(--bg-elevated);
@@ -591,6 +612,24 @@
     padding:0 16px;margin-bottom:12px;outline:none;
   }
   .routine-name-input::placeholder{color:var(--text-tertiary);}
+
+  /* ---------- Añadir marca: lightweight form fields ---------- */
+  .form-label{
+    font-family:var(--font-body);font-weight:600;font-size:12.5px;color:var(--text-tertiary);
+    margin-bottom:8px;
+  }
+  .form-input{
+    width:100%;height:48px;border-radius:14px;
+    background:var(--surface-high);border:1px solid var(--border-light);
+    color:var(--text-primary);font-family:var(--font-body);font-weight:500;font-size:14.5px;
+    padding:0 16px;margin-bottom:18px;outline:none;
+    color-scheme:dark;
+    -webkit-appearance:none;appearance:none;
+  }
+  .form-input::placeholder{color:var(--text-tertiary);}
+  .form-row{display:flex;gap:12px;}
+  .form-row .form-input{margin-bottom:18px;}
+
   .flow-footer-meta{
     font-family:var(--font-body);font-weight:500;font-size:12.5px;color:var(--text-tertiary);
     margin-bottom:10px;
@@ -608,7 +647,7 @@
   }
   .flow-primary-btn svg{width:16px;height:16px;}
 
-  /* ---------- BeroFit: goal picker ---------- */
+  /* ---------- Strive: goal picker ---------- */
   .goal-option{
     display:flex;align-items:center;gap:14px;
     background:var(--surface);border:1px solid var(--border);border-radius:18px;
@@ -701,15 +740,20 @@
 
       <!-- Empty state: shown when the user has no routine assigned for today -->
       <div class="hero-empty" id="heroEmptyState" style="display:none">
+        <div class="hero-empty-watermark"><i data-feather="compass"></i></div>
+        <div class="hero-empty-eyebrow-row">
+          <div class="hero-empty-eyebrow-dot"></div>
+          <div class="hero-empty-eyebrow">Sin entrenamiento programado</div>
+        </div>
         <div class="hero-empty-icon"><i data-feather="compass"></i></div>
-        <div class="hero-empty-title">¿Qué quieres entrenar hoy?</div>
-        <div class="hero-empty-subtitle">Explora tus rutinas o crea un entrenamiento.</div>
+        <div class="hero-empty-title">Tú decides cómo entrenar hoy</div>
+        <div class="hero-empty-subtitle">Explora tus rutinas o deja que Strive te arme un plan.</div>
         <div class="hero-empty-actions">
-          <button class="hero-empty-primary" onclick="showTab('rutinas')">
-            Ver mis rutinas <i data-feather="arrow-right"></i>
+          <button class="hero-empty-primary" onclick="showTab('rutinas'); openGoalPicker();">
+            Crear con Strive <i data-feather="cpu"></i>
           </button>
           <button class="hero-empty-secondary" onclick="showTab('rutinas')">
-            <i data-feather="plus"></i> Crear entrenamiento
+            <i data-feather="arrow-right"></i> Explorar rutinas
           </button>
         </div>
       </div>
@@ -829,28 +873,12 @@
       </div>
 
       <div style="height:28px"></div>
-      <div class="section-header"><span class="section-title">Mejores marcas</span></div>
+      <div class="section-header">
+        <span class="section-title">Récords personales</span>
+        <span class="section-action" onclick="openAddRecordScreen()"><i data-feather="plus"></i> Añadir marca</span>
+      </div>
       <div class="card" style="padding:0">
-        <div class="pr-row">
-          <div class="pr-icon"><i data-feather="award"></i></div>
-          <div><div class="pr-name">Press banca</div><div class="pr-date">3 sept</div></div>
-          <div class="pr-value">72.5 kg</div>
-        </div>
-        <div class="pr-row">
-          <div class="pr-icon"><i data-feather="award"></i></div>
-          <div><div class="pr-name">Sentadilla</div><div class="pr-date">28 ago</div></div>
-          <div class="pr-value">95 kg</div>
-        </div>
-        <div class="pr-row">
-          <div class="pr-icon"><i data-feather="award"></i></div>
-          <div><div class="pr-name">Peso muerto</div><div class="pr-date">15 ago</div></div>
-          <div class="pr-value">110 kg</div>
-        </div>
-        <div class="pr-row">
-          <div class="pr-icon"><i data-feather="award"></i></div>
-          <div><div class="pr-name">Press militar</div><div class="pr-date">10 ago</div></div>
-          <div class="pr-value">42.5 kg</div>
-        </div>
+        <div id="personalRecordsList"></div>
       </div>
 
       <div style="height:24px"></div>
@@ -966,7 +994,7 @@
     <div class="sheet-option" onclick="openGoalPicker()">
       <div class="sheet-option-icon"><i data-feather="cpu"></i></div>
       <div>
-        <div class="sheet-option-title">Crear rutina con BeroFit</div>
+        <div class="sheet-option-title">Crear rutina con Strive</div>
         <div class="sheet-option-desc">Te generamos una rutina según tu objetivo</div>
       </div>
     </div>
@@ -995,12 +1023,12 @@
     </div>
   </div>
 
-  <!-- ============ CREATE WITH BEROFIT: GOAL PICKER ============ -->
+  <!-- ============ CREATE WITH STRIVE: GOAL PICKER ============ -->
   <div class="flow-overlay" id="goalPickerScreen">
     <div class="flow-header">
       <div>
         <div class="flow-title">¿Qué quieres conseguir con tu entrenamiento?</div>
-        <div class="flow-subtitle">BeroFit generará una rutina personalizada para ti.</div>
+        <div class="flow-subtitle">Strive generará una rutina personalizada para ti.</div>
       </div>
       <button class="close-btn" onclick="closeGoalPicker()"><i data-feather="x"></i></button>
     </div>
@@ -1008,8 +1036,72 @@
     <div class="flow-body" id="goalPickerBody"></div>
 
     <div class="flow-footer">
-      <button class="flow-primary-btn" id="generateRoutineBtn" onclick="generateBeroFitRoutine()" disabled>
+      <button class="flow-primary-btn" id="generateRoutineBtn" onclick="generateStriveRoutine()" disabled>
         Generar rutina <i data-feather="cpu"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ AÑADIR MARCA: import a historical record ============ -->
+  <!-- Only for weights from before using Strive — not a general "log your
+       weights" section. Normal records always come from finishing a workout. -->
+  <div class="flow-overlay" id="addRecordScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title">Añadir marca</div>
+        <div class="flow-subtitle">Importa un peso que ya tenías antes de usar Strive.</div>
+      </div>
+      <button class="close-btn" onclick="closeAddRecordScreen()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body">
+      <div class="form-label">Ejercicio</div>
+      <select class="form-input" id="addRecordExercise"></select>
+
+      <div class="form-row">
+        <div style="flex:1">
+          <div class="form-label">Peso (kg)</div>
+          <input type="number" inputmode="decimal" step="0.5" min="0" class="form-input" id="addRecordWeight" placeholder="80" />
+        </div>
+        <div style="flex:1">
+          <div class="form-label">Repeticiones</div>
+          <input type="number" inputmode="numeric" min="1" class="form-input" id="addRecordReps" placeholder="5" />
+        </div>
+      </div>
+
+      <div class="form-label">Fecha</div>
+      <input type="date" class="form-input" id="addRecordDate" />
+    </div>
+
+    <div class="flow-footer">
+      <button class="flow-primary-btn" id="saveRecordBtn" onclick="saveManualRecord()" disabled>
+        Guardar marca <i data-feather="check"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ ROUTINE PREVIEW: view before train ============ -->
+  <!-- Selecting a routine from "Mis rutinas" always lands here first. This
+       screen only shows the plan — no set-completion state, no checkboxes,
+       no "X de X series". "Iniciar entrenamiento" is the only way through
+       to the active workout screen. -->
+  <div class="flow-overlay" id="routineDetailScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title" id="routineDetailName">Push</div>
+        <div class="flow-subtitle" id="routineDetailSubtitle">Pecho · Hombros · Tríceps</div>
+      </div>
+      <button class="close-btn" onclick="closeRoutineDetail()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body">
+      <div class="section-title" style="margin-bottom:14px;">Ejercicios</div>
+      <div class="card" id="routineDetailBody" style="padding:0"></div>
+    </div>
+
+    <div class="flow-footer">
+      <button class="flow-primary-btn" onclick="startWorkoutFromRoutine(currentPreviewRoutineId)">
+        Iniciar entrenamiento <i data-feather="arrow-right"></i>
       </button>
     </div>
   </div>
@@ -1153,6 +1245,7 @@
       restRemaining = null;
       document.getElementById('restBanner').style.display = 'none';
       if(exIndex === workout.length - 1){
+        logCompletedWorkout();
         closeWorkout();
         showTab('home');
         return;
@@ -1217,14 +1310,43 @@
   }
 
   // ================================================================
-  // RUTINAS: data model + create-routine flows (Crear mi rutina / BeroFit)
+  // RUTINAS: data model + create-routine flows (Crear mi rutina / Strive)
   // ================================================================
 
   // ---------- Routines list (real state — pushing here re-renders the list) ----------
+  // Every routine carries its own `exercises` list now — this is what the
+  // preview screen reads, and what seeds the active workout when the user
+  // actually starts it. Selecting a routine never starts a workout by itself.
   let routines = [
-    { id:'push', name:'Push', exerciseCount:4, estimatedMinutes:50, lastPerformed:'Hace 2 días', clickable:true },
-    { id:'pull', name:'Pull', exerciseCount:5, estimatedMinutes:55, lastPerformed:'Hace 4 días', clickable:false },
-    { id:'legs', name:'Legs', exerciseCount:5, estimatedMinutes:60, lastPerformed:'Hace 6 días', clickable:false },
+    {
+      id:'push', name:'Push', exerciseCount:4, estimatedMinutes:50, lastPerformed:'Hace 2 días',
+      exercises:[
+        { name:'Press banca', sets:4, repsRange:'6-10', weight:72.5 },
+        { name:'Press inclinado mancuerna', sets:3, repsRange:'8-12', weight:26 },
+        { name:'Elevaciones laterales', sets:3, repsRange:'10-15', weight:10 },
+        { name:'Extensión de tríceps', sets:3, repsRange:'10-12', weight:22.5 },
+      ],
+    },
+    {
+      id:'pull', name:'Pull', exerciseCount:5, estimatedMinutes:55, lastPerformed:'Hace 4 días',
+      exercises:[
+        { name:'Dominadas', sets:4, repsRange:'6-10' },
+        { name:'Remo con barra', sets:4, repsRange:'8-10', weight:60 },
+        { name:'Jalón al pecho', sets:3, repsRange:'10-12', weight:55 },
+        { name:'Face pull', sets:3, repsRange:'12-15', weight:18 },
+        { name:'Curl de bíceps', sets:3, repsRange:'10-12', weight:14 },
+      ],
+    },
+    {
+      id:'legs', name:'Legs', exerciseCount:5, estimatedMinutes:60, lastPerformed:'Hace 6 días',
+      exercises:[
+        { name:'Sentadilla', sets:4, repsRange:'5-8', weight:95 },
+        { name:'Peso muerto rumano', sets:3, repsRange:'8-10', weight:80 },
+        { name:'Prensa', sets:3, repsRange:'10-12', weight:140 },
+        { name:'Curl femoral', sets:3, repsRange:'10-12', weight:40 },
+        { name:'Elevación de talones', sets:4, repsRange:'12-15', weight:60 },
+      ],
+    },
   ];
 
   function renderRoutinesList(highlightId){
@@ -1241,7 +1363,8 @@
           '<div class="routine-last">' + (r.lastPerformed ? 'Última vez: ' + r.lastPerformed : 'Recién creada') + '</div>' +
         '</div>' +
         '<i data-feather="chevron-right" class="chev"></i>';
-      if(r.clickable){ el.addEventListener('click', openWorkout); }
+      // Every routine opens its preview first — never straight into a workout.
+      el.addEventListener('click', () => openRoutineDetail(r.id));
       container.appendChild(el);
     });
     const n = routines.length;
@@ -1285,6 +1408,17 @@
       { id:'t3', name:'Press francés' },
     ]},
   ];
+
+  // Shared lookups derived from the catalog above — used by both create-routine
+  // flows and by the routine preview screen, so there's one source of truth.
+  const EXERCISE_NAME_BY_ID = {};
+  MUSCLE_GROUPS.forEach(group => group.exercises.forEach(ex => { EXERCISE_NAME_BY_ID[ex.id] = ex.name; }));
+
+  function findMuscleGroupLabelForExercise(exerciseName){
+    const group = MUSCLE_GROUPS.find(g => g.exercises.some(ex => ex.name === exerciseName));
+    if(!group) return null;
+    return group.label.charAt(0) + group.label.slice(1).toLowerCase();
+  }
 
   // ---------- Action sheet ----------
   function openCreateSheet(){
@@ -1350,12 +1484,19 @@
     if(selectedExerciseIds.size === 0) return;
     const typedName = document.getElementById('routineNameInput').value.trim();
     const name = typedName || 'Mi rutina';
-    const exerciseCount = selectedExerciseIds.size;
+    // Default sets/reps for manually picked exercises — the user hasn't
+    // configured these yet, so a sensible general-purpose default is used.
+    const exercises = Array.from(selectedExerciseIds).map(id => ({
+      name: EXERCISE_NAME_BY_ID[id],
+      sets: 3,
+      repsRange: '8-12',
+    }));
+    const exerciseCount = exercises.length;
     // Simple duration estimate for now: ~9 min per exercise (warm-up + sets + rest).
     const estimatedMinutes = Math.max(20, Math.round(exerciseCount * 9));
     const id = 'custom-' + Date.now();
 
-    routines.push({ id, name, exerciseCount, estimatedMinutes, lastPerformed:null, clickable:false });
+    routines.push({ id, name, exerciseCount, estimatedMinutes, lastPerformed:null, exercises });
 
     closeExercisePicker();
     showTab('rutinas');
@@ -1363,7 +1504,7 @@
     showSuccessToast('Rutina "' + name + '" creada');
   }
 
-  // ---------- Flow 2: "Crear rutina con BeroFit" — goal-based generation ----------
+  // ---------- Flow 2: "Crear rutina con Strive" — goal-based generation ----------
   const GOALS = [
     { key:'muscle',    label:'Ganar músculo',            icon:'trending-up' },
     { key:'strength',  label:'Ganar fuerza',              icon:'zap' },
@@ -1417,28 +1558,79 @@
   };
 
   const GOAL_ROUTINE_TEMPLATES = {
-    muscle:    { name:'Hipertrofia BeroFit', exerciseCount:5, estimatedMinutes:55 },
-    strength:  { name:'Fuerza BeroFit',      exerciseCount:4, estimatedMinutes:60 },
-    endurance: { name:'Resistencia BeroFit', exerciseCount:7, estimatedMinutes:45 },
-    fatloss:   { name:'Quema BeroFit',       exerciseCount:6, estimatedMinutes:40 },
-    fitness:   { name:'Full Body BeroFit',   exerciseCount:5, estimatedMinutes:45 },
+    muscle: {
+      name:'Hipertrofia Strive', estimatedMinutes:55,
+      exercises:[
+        { ref:'c1',  sets:4, repsRange:'8-12' },  // Press banca
+        { ref:'b2',  sets:4, repsRange:'8-12' },  // Remo con barra
+        { ref:'l1',  sets:4, repsRange:'8-12' },  // Sentadilla
+        { ref:'s2',  sets:3, repsRange:'10-12' }, // Elevaciones laterales
+        { ref:'bi1', sets:3, repsRange:'10-12' }, // Curl de bíceps
+      ],
+    },
+    strength: {
+      name:'Fuerza Strive', estimatedMinutes:60,
+      exercises:[
+        { ref:'l1', sets:5, repsRange:'3-5' }, // Sentadilla
+        { ref:'c1', sets:5, repsRange:'3-5' }, // Press banca
+        { ref:'b2', sets:4, repsRange:'5-6' }, // Remo con barra
+        { ref:'l2', sets:4, repsRange:'5-6' }, // Peso muerto rumano
+      ],
+    },
+    endurance: {
+      name:'Resistencia Strive', estimatedMinutes:45,
+      exercises:[
+        { ref:'l3',  sets:3, repsRange:'15-20' }, // Prensa
+        { ref:'b3',  sets:3, repsRange:'15-20' }, // Jalón al pecho
+        { ref:'s2',  sets:3, repsRange:'15-20' }, // Elevaciones laterales
+        { ref:'t2',  sets:3, repsRange:'15-20' }, // Fondos en banco
+        { ref:'bi2', sets:3, repsRange:'15-20' }, // Curl martillo
+        { ref:'c3',  sets:3, repsRange:'15-20' }, // Aperturas con mancuerna
+      ],
+    },
+    fatloss: {
+      name:'Quema Strive', estimatedMinutes:40,
+      exercises:[
+        { ref:'l1', sets:3, repsRange:'12-15' }, // Sentadilla
+        { ref:'b2', sets:3, repsRange:'12-15' }, // Remo con barra
+        { ref:'c1', sets:3, repsRange:'12-15' }, // Press banca
+        { ref:'s2', sets:3, repsRange:'12-15' }, // Elevaciones laterales
+        { ref:'l3', sets:3, repsRange:'12-15' }, // Prensa
+        { ref:'t1', sets:3, repsRange:'12-15' }, // Extensión de tríceps
+      ],
+    },
+    fitness: {
+      name:'Full Body Strive', estimatedMinutes:45,
+      exercises:[
+        { ref:'l1',  sets:3, repsRange:'10-12' }, // Sentadilla
+        { ref:'c1',  sets:3, repsRange:'10-12' }, // Press banca
+        { ref:'b2',  sets:3, repsRange:'10-12' }, // Remo con barra
+        { ref:'s1',  sets:3, repsRange:'10-12' }, // Press militar
+        { ref:'bi1', sets:2, repsRange:'10-12' }, // Curl de bíceps
+      ],
+    },
   };
 
   function generateRoutineForGoal(goalKey, preferences){
     // `preferences` is accepted but unused beyond `goal` for now — reserved
     // for the future personalization variables listed above.
     const template = GOAL_ROUTINE_TEMPLATES[goalKey] || GOAL_ROUTINE_TEMPLATES.fitness;
+    const exercises = template.exercises.map(t => ({
+      name: EXERCISE_NAME_BY_ID[t.ref],
+      sets: t.sets,
+      repsRange: t.repsRange,
+    }));
     return {
-      id: 'berofit-' + Date.now(),
+      id: 'strive-' + Date.now(),
       name: template.name,
-      exerciseCount: template.exerciseCount,
+      exerciseCount: exercises.length,
       estimatedMinutes: template.estimatedMinutes,
       lastPerformed: null,
-      clickable: false,
+      exercises,
     };
   }
 
-  function generateBeroFitRoutine(){
+  function generateStriveRoutine(){
     if(!selectedGoal) return;
     userPreferences.goal = selectedGoal;
     const routine = generateRoutineForGoal(selectedGoal, userPreferences);
@@ -1447,7 +1639,7 @@
     closeGoalPicker();
     showTab('rutinas');
     renderRoutinesList(routine.id);
-    showSuccessToast('BeroFit creó "' + routine.name + '"');
+    showSuccessToast('Strive creó "' + routine.name + '"');
   }
 
   // ---------- Success toast ----------
@@ -1460,7 +1652,207 @@
     toastTimeout = setTimeout(() => toast.classList.remove('open'), 2600);
   }
 
+  // ================================================================
+  // PROGRESO: Récords personales — derived from the training log, never
+  // entered by hand.
+  //
+  // `workoutLogs` is the single source of truth: one entry per completed
+  // workout, each with the sets actually logged (exercise, weight, reps).
+  // A personal record is NOT a stored field anywhere — it's recomputed
+  // from this log every time it's needed. That means:
+  //   - a heavier set automatically becomes the new record
+  //   - a lighter set never changes it
+  //   - editing or deleting a logged workout and recomputing gives the
+  //     correct record again, because nothing is cached
+  // This mirrors how it would work against a real backend: the log is the
+  // data; the record is a query over it.
+  // ================================================================
+
+  let workoutLogs = [
+    { date:'2026-07-20', entries:[ { exerciseName:'Press banca',   weightKg:70,   reps:8 } ] },
+    { date:'2026-07-25', entries:[ { exerciseName:'Press militar', weightKg:40,   reps:8 } ] },
+    { date:'2026-08-10', entries:[ { exerciseName:'Sentadilla',    weightKg:90,   reps:6 }, { exerciseName:'Press militar', weightKg:42.5, reps:6 } ] },
+    { date:'2026-08-15', entries:[ { exerciseName:'Peso muerto',   weightKg:110,  reps:5 } ] },
+    { date:'2026-08-20', entries:[ { exerciseName:'Press banca',   weightKg:72.5, reps:8 } ] },
+    { date:'2026-08-28', entries:[ { exerciseName:'Sentadilla',    weightKg:95,   reps:6 } ] },
+    { date:'2026-09-03', entries:[ { exerciseName:'Press banca',   weightKg:75,   reps:6 } ] },
+  ];
+
+  function todayIso(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  // This is the real entry point for new records: whatever the user actually
+  // completed in the workout screen gets appended to the log here. Nothing
+  // about "Récords personales" is touched directly — it just re-reads the
+  // log next render and reflects whatever the new max turns out to be.
+  function logCompletedWorkout(){
+    const entries = [];
+    workout.forEach(ex => {
+      ex.sets.forEach(s => {
+        if(s.completed){
+          entries.push({ exerciseName: ex.name, weightKg: s.weight, reps: s.reps });
+        }
+      });
+    });
+    if(entries.length === 0) return;
+    workoutLogs.push({ date: todayIso(), entries });
+    renderPersonalRecords();
+  }
+
+  function formatWeightEs(kg){
+    // 72.5 -> "72,5" — matches the comma-decimal formatting used elsewhere in the app.
+    return String(kg).replace('.', ',');
+  }
+
+  const MONTHS_ES = ['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'];
+  function formatDateEs(iso){
+    const parts = iso.split('-');
+    const day = parseInt(parts[2], 10);
+    const month = MONTHS_ES[parseInt(parts[1], 10) - 1];
+    return day + ' ' + month;
+  }
+
+  // Walks a single exercise's sessions in chronological order and tracks
+  // the running max. Whenever a session beats it, that becomes the new
+  // current record and the prior running max becomes "previous" — which is
+  // exactly "récord actual - récord anterior" once we diff the two.
+  function computeExerciseRecordProgression(exerciseName, chronologicalLogs){
+    let currentRecord = null;
+    let previousRecord = null;
+    chronologicalLogs.forEach(log => {
+      const weightsThisSession = log.entries
+        .filter(e => e.exerciseName === exerciseName)
+        .map(e => e.weightKg);
+      if(weightsThisSession.length === 0) return;
+      const sessionMax = Math.max(...weightsThisSession);
+      if(currentRecord === null || sessionMax > currentRecord.weight){
+        previousRecord = currentRecord;
+        currentRecord = { date: log.date, weight: sessionMax };
+      }
+    });
+    return { currentRecord, previousRecord };
+  }
+
+  // Only exercises that actually appear in the log are shown — never an
+  // invented record for something the user hasn't logged yet. Sorted by
+  // how recently the record was set, most recent first.
+  function getAllPersonalRecords(){
+    const chronologicalLogs = [...workoutLogs].sort((a, b) => a.date.localeCompare(b.date));
+    const exerciseNames = new Set();
+    chronologicalLogs.forEach(log => log.entries.forEach(e => exerciseNames.add(e.exerciseName)));
+
+    const records = Array.from(exerciseNames)
+      .map(name => {
+        const { currentRecord, previousRecord } = computeExerciseRecordProgression(name, chronologicalLogs);
+        return { exerciseName: name, currentRecord, previousRecord };
+      })
+      .filter(r => r.currentRecord); // defensive — always true here, but never show a record with nothing behind it
+
+    records.sort((a, b) => b.currentRecord.date.localeCompare(a.currentRecord.date));
+    return records;
+  }
+
+  function renderPersonalRecords(){
+    const container = document.getElementById('personalRecordsList');
+    const records = getAllPersonalRecords();
+
+    container.innerHTML = records.map(r => {
+      const delta = r.previousRecord ? Math.round((r.currentRecord.weight - r.previousRecord.weight) * 100) / 100 : null;
+
+      let deltaHtml;
+      if(delta === null){
+        // No prior record to compare against yet — show the record alone, per spec.
+        deltaHtml = '';
+      } else if(delta > 0){
+        deltaHtml = '<div class="pr-delta pr-delta-up"><i data-feather="trending-up"></i> +' + formatWeightEs(delta) + ' kg</div>';
+      } else {
+        deltaHtml = '<div class="pr-delta pr-delta-flat">Sin cambios</div>';
+      }
+
+      return (
+        '<div class="pr-row">' +
+          '<div class="pr-icon"><i data-feather="award"></i></div>' +
+          '<div>' +
+            '<div class="pr-name">' + r.exerciseName + '</div>' +
+            '<div class="pr-date">' + formatDateEs(r.currentRecord.date) + ' · ' + formatWeightEs(r.currentRecord.weight) + ' kg</div>' +
+          '</div>' +
+          deltaHtml +
+        '</div>'
+      );
+    }).join('');
+
+    feather.replace();
+  }
+
+  // ---------- "Añadir marca": import a record from before using Strive ----------
+  // This does not create a parallel place to manage weights — it only ever
+  // appends one more entry to the same workoutLogs array that real workouts
+  // write to, so it flows through the exact same record calculation above.
+  function getAllCatalogExercises(){
+    // Reuses the same exercise catalog as "Crear mi rutina" — one list, two screens.
+    return MUSCLE_GROUPS.flatMap(group => group.exercises.map(ex => ({ name: ex.name, group: group.label })));
+  }
+
+  function openAddRecordScreen(){
+    const select = document.getElementById('addRecordExercise');
+    const exercises = getAllCatalogExercises();
+    let lastGroup = null;
+    let optionsHtml = '';
+    exercises.forEach(ex => {
+      if(ex.group !== lastGroup){
+        if(lastGroup !== null) optionsHtml += '</optgroup>';
+        optionsHtml += '<optgroup label="' + ex.group + '">';
+        lastGroup = ex.group;
+      }
+      optionsHtml += '<option value="' + ex.name + '">' + ex.name + '</option>';
+    });
+    optionsHtml += '</optgroup>';
+    select.innerHTML = optionsHtml;
+
+    document.getElementById('addRecordWeight').value = '';
+    document.getElementById('addRecordReps').value = '';
+    document.getElementById('addRecordDate').value = '';
+    updateAddRecordFooter();
+
+    document.getElementById('addRecordScreen').classList.add('open');
+  }
+
+  function closeAddRecordScreen(){
+    document.getElementById('addRecordScreen').classList.remove('open');
+  }
+
+  function updateAddRecordFooter(){
+    const weight = parseFloat(document.getElementById('addRecordWeight').value);
+    const date = document.getElementById('addRecordDate').value;
+    document.getElementById('saveRecordBtn').disabled = !(weight > 0 && date);
+  }
+
+  function saveManualRecord(){
+    const exerciseName = document.getElementById('addRecordExercise').value;
+    const weight = parseFloat(document.getElementById('addRecordWeight').value);
+    const reps = parseInt(document.getElementById('addRecordReps').value, 10) || null;
+    const date = document.getElementById('addRecordDate').value;
+    if(!exerciseName || !(weight > 0) || !date) return;
+
+    workoutLogs.push({
+      date,
+      source: 'manual-import',
+      entries: [{ exerciseName, weightKg: weight, reps }],
+    });
+
+    closeAddRecordScreen();
+    renderPersonalRecords();
+    showSuccessToast('Marca de ' + exerciseName + ' añadida');
+  }
+
+  ['addRecordWeight', 'addRecordDate'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateAddRecordFooter);
+  });
+
   renderRoutinesList();
+  renderPersonalRecords();
   feather.replace();
 </script>
 </body>
