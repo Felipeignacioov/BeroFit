@@ -310,16 +310,6 @@
   }
   .hero-empty-secondary svg{width:15px;height:15px;color:var(--text-secondary);}
 
-  /* ---------- Demo toggle (preview helper, not part of the app UI) ---------- */
-  .demo-toggle{
-    display:inline-flex;align-items:center;gap:6px;
-    margin-top:16px;padding:6px 12px;
-    border:1px dashed var(--border-light);border-radius:999px;
-    font-family:var(--font-body);font-weight:500;font-size:11.5px;
-    color:var(--text-tertiary);cursor:pointer;
-  }
-  .demo-toggle svg{width:12px;height:12px;}
-
   /* ---------- Progress cards (two-up grid) ---------- */
   .progress-grid{
     display:flex;
@@ -908,17 +898,11 @@
       <div class="home-header">
         <div>
           <div class="display-name" id="greetingName">Buenas noches, Felipe</div>
-          <div class="greeting-sub">¿Listo para entrenar?</div>
+          <div class="greeting-sub">¿Qué vas a entrenar hoy?</div>
         </div>
         <div class="header-actions">
-          <div class="icon-btn"><i data-feather="bell"></i></div>
           <div class="avatar">F</div>
         </div>
-      </div>
-
-      <div class="demo-toggle" onclick="toggleHomeDemoState()">
-        <i data-feather="repeat"></i>
-        <span id="demoToggleLabel">Vista previa: con rutina asignada</span>
       </div>
 
       <div class="hero" id="heroWithRoutine">
@@ -1616,19 +1600,6 @@
     colEl.querySelector('.bar').classList.add('selected');
     colEl.querySelector('.day-label').classList.add('selected');
     document.getElementById('chartDayDetail').textContent = dayName + ' · ' + count + ' series';
-  }
-
-  // ---------- Demo toggle: preview Home with vs. without a routine ----------
-  // (This switch exists only to review both states here — in the real app,
-  // Home would simply render one or the other based on whether a routine
-  // is scheduled for today.)
-  let showingEmptyState = false;
-  function toggleHomeDemoState(){
-    showingEmptyState = !showingEmptyState;
-    document.getElementById('heroWithRoutine').style.display = showingEmptyState ? 'none' : 'block';
-    document.getElementById('heroEmptyState').style.display = showingEmptyState ? 'flex' : 'none';
-    document.getElementById('demoToggleLabel').textContent =
-      showingEmptyState ? 'Vista previa: sin rutina asignada' : 'Vista previa: con rutina asignada';
   }
 
   // ================================================================
