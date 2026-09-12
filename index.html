@@ -726,6 +726,99 @@
     opacity:0.4;box-shadow:none;cursor:not-allowed;
   }
   .flow-primary-btn svg{width:16px;height:16px;}
+  .flow-secondary-btn{
+    width:100%;height:50px;border-radius:16px;margin-top:10px;
+    background:transparent;border:1px solid var(--border-light);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--font-body);font-weight:600;font-size:14.5px;color:var(--text-primary);
+  }
+  .flow-secondary-btn svg{width:15px;height:15px;color:var(--text-secondary);}
+
+  /* ---------- Routine detail: editable "marca actual" per exercise ---------- */
+  .routine-ex-weight-btn{
+    font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--text-primary);
+    background:var(--surface-high);padding:5px 10px;border-radius:9px;flex-shrink:0;
+    border:1px solid transparent;cursor:pointer;
+  }
+  .routine-ex-weight-btn.unset{
+    font-family:var(--font-body);font-weight:600;font-size:12px;color:var(--accent-bright);
+    background:var(--accent-soft);border:1px dashed var(--accent-soft-border);
+  }
+  .routine-ex-weight-edit{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .routine-ex-weight-edit input{
+    width:60px;height:32px;border-radius:8px;text-align:center;
+    background:var(--surface-high);border:1px solid var(--accent-soft-border);
+    color:var(--text-primary);font-family:var(--font-display);font-weight:600;font-size:13.5px;outline:none;
+  }
+  .routine-ex-weight-confirm{
+    width:28px;height:28px;border-radius:8px;background:var(--accent);border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .routine-ex-weight-confirm svg{width:13px;height:13px;color:#fff;}
+
+  /* ---------- Editar rutina ---------- */
+  .edit-ex-row{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:14px;margin-bottom:10px;
+  }
+  .edit-ex-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .edit-ex-name{font-family:var(--font-body);font-weight:600;font-size:14.5px;color:var(--text-primary);flex:1;min-width:0;}
+  .edit-ex-icon-btn{
+    width:28px;height:28px;border-radius:8px;background:var(--surface-high);border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--text-secondary);
+  }
+  .edit-ex-icon-btn:disabled{opacity:0.3;cursor:not-allowed;}
+  .edit-ex-icon-btn svg{width:13px;height:13px;}
+  .edit-ex-icon-btn.danger{color:var(--danger);}
+  .edit-ex-fields{display:flex;gap:8px;}
+  .edit-ex-field{flex:1;min-width:0;}
+  .edit-ex-field-label{font-family:var(--font-body);font-weight:500;font-size:10.5px;color:var(--text-tertiary);margin-bottom:4px;}
+  .edit-ex-field input{
+    width:100%;height:36px;border-radius:9px;text-align:center;
+    background:var(--surface-high);border:1px solid var(--border-light);
+    color:var(--text-primary);font-family:var(--font-body);font-weight:600;font-size:13px;outline:none;
+  }
+  .edit-add-toggle{
+    width:100%;height:44px;border-radius:14px;margin-top:4px;margin-bottom:14px;
+    background:var(--surface-high);border:1px dashed var(--border-light);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--text-secondary);
+  }
+  .edit-add-toggle svg{width:14px;height:14px;}
+  .edit-catalog{margin-bottom:8px;}
+
+  /* ---------- Routine card menu ("⋮") ---------- */
+  .routine-kebab-btn{
+    width:32px;height:32px;border-radius:999px;background:transparent;border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    color:var(--text-tertiary);flex-shrink:0;margin-right:2px;
+  }
+  .routine-kebab-btn svg{width:17px;height:17px;}
+  .sheet-option-danger .sheet-option-title{color:var(--danger);}
+  .sheet-option-icon-danger{background:rgba(248,113,113,0.12);border-color:rgba(248,113,113,0.28);}
+  .sheet-option-icon-danger svg{color:var(--danger);}
+
+  /* ---------- Confirm dialog (destructive actions) ---------- */
+  .confirm-dialog{
+    position:absolute;left:24px;right:24px;top:50%;
+    background:var(--bg-elevated);border:1px solid var(--border-light);border-radius:22px;
+    padding:22px;z-index:152;
+    transform:translateY(-50%) scale(0.94);opacity:0;pointer-events:none;
+    transition:transform 0.2s ease, opacity 0.2s ease;
+  }
+  .confirm-dialog.open{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto;}
+  .confirm-title{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--text-primary);margin-bottom:8px;}
+  .confirm-desc{font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);line-height:1.5;margin-bottom:20px;}
+  .confirm-desc b{color:var(--text-primary);font-weight:600;}
+  .confirm-actions{display:flex;gap:10px;}
+  .confirm-cancel-btn{
+    flex:1;height:46px;border-radius:14px;background:var(--surface-high);border:none;cursor:pointer;
+    font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--text-primary);
+  }
+  .confirm-delete-btn{
+    flex:1;height:46px;border-radius:14px;background:var(--danger);border:none;cursor:pointer;
+    font-family:var(--font-body);font-weight:600;font-size:14px;color:#2A0B0B;
+  }
 
   /* ---------- Strive: goal picker ---------- */
   .goal-option{
@@ -1200,6 +1293,79 @@
       <button class="flow-primary-btn" onclick="startWorkoutFromRoutine(currentPreviewRoutineId)">
         Iniciar entrenamiento <i data-feather="arrow-right"></i>
       </button>
+      <button class="flow-secondary-btn" onclick="openEditRoutineScreen(currentPreviewRoutineId)">
+        <i data-feather="edit-3"></i> Editar rutina
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ EDITAR RUTINA: rename, add/remove/reorder exercises, edit sets/reps/weight ============ -->
+  <!-- Opens "on top" of the routine preview (both stay mounted) so closing
+       it naturally reveals the (now-refreshed) preview underneath. Saving
+       writes straight back into the same `routines` array everything else
+       reads from — no parallel data store. -->
+  <div class="flow-overlay" id="editRoutineScreen">
+    <div class="flow-header">
+      <div>
+        <div class="flow-title">Editar rutina</div>
+        <div class="flow-subtitle">Cambia el nombre, los ejercicios o sus datos.</div>
+      </div>
+      <button class="close-btn" onclick="closeEditRoutineScreen()"><i data-feather="x"></i></button>
+    </div>
+
+    <div class="flow-body">
+      <div class="form-label">Nombre de la rutina</div>
+      <input type="text" class="form-input" id="editRoutineNameInput" placeholder="Nombre de tu rutina" />
+
+      <div class="section-title" style="margin:4px 0 12px 0; font-size:16px;">Ejercicios</div>
+      <div id="editRoutineExerciseList"></div>
+
+      <button class="edit-add-toggle" onclick="toggleEditCatalog()">
+        <i data-feather="plus"></i> Añadir ejercicio
+      </button>
+      <div id="editRoutineCatalog" class="edit-catalog" style="display:none;"></div>
+    </div>
+
+    <div class="flow-footer">
+      <button class="flow-primary-btn" onclick="saveRoutineEdits()">
+        Guardar cambios <i data-feather="check"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ ROUTINE CARD MENU: "⋮" -> Editar / Eliminar ============ -->
+  <div class="sheet-backdrop" id="routineMenuBackdrop" onclick="closeRoutineMenu()"></div>
+  <div class="action-sheet" id="routineMenuSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="routineMenuTitle">Push</div>
+
+    <div class="sheet-option" onclick="editRoutineFromMenu()">
+      <div class="sheet-option-icon"><i data-feather="edit-3"></i></div>
+      <div>
+        <div class="sheet-option-title">Editar rutina</div>
+        <div class="sheet-option-desc">Ejercicios, series, pesos y nombre</div>
+      </div>
+    </div>
+
+    <div class="sheet-option sheet-option-danger" onclick="deleteRoutineFromMenu()">
+      <div class="sheet-option-icon sheet-option-icon-danger"><i data-feather="trash-2"></i></div>
+      <div>
+        <div class="sheet-option-title">Eliminar rutina</div>
+        <div class="sheet-option-desc">Esta acción no se puede deshacer</div>
+      </div>
+    </div>
+
+    <button class="sheet-cancel" onclick="closeRoutineMenu()">Cancelar</button>
+  </div>
+
+  <!-- ============ CONFIRM DELETE ============ -->
+  <div class="sheet-backdrop" id="deleteConfirmBackdrop" onclick="closeDeleteConfirm()"></div>
+  <div class="confirm-dialog" id="deleteConfirmDialog">
+    <div class="confirm-title">¿Eliminar rutina?</div>
+    <div class="confirm-desc">Esta acción eliminará <b id="deleteConfirmRoutineName">esta rutina</b> de tus rutinas activas.</div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel-btn" onclick="closeDeleteConfirm()">Cancelar</button>
+      <button class="confirm-delete-btn" onclick="confirmDeleteRoutine()">Eliminar</button>
     </div>
   </div>
 
@@ -1482,9 +1648,14 @@
           '<div class="routine-meta">' + r.exerciseCount + ' ejercicios · ~' + r.estimatedMinutes + ' min</div>' +
           '<div class="routine-last">' + (r.lastPerformed ? 'Última vez: ' + r.lastPerformed : 'Recién creada') + '</div>' +
         '</div>' +
+        '<button class="routine-kebab-btn" data-role="kebab"><i data-feather="more-vertical"></i></button>' +
         '<i data-feather="chevron-right" class="chev"></i>';
       // Every routine opens its preview first — never straight into a workout.
       el.addEventListener('click', () => openRoutineDetail(r.id));
+      el.querySelector('[data-role="kebab"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openRoutineMenu(r.id);
+      });
       container.appendChild(el);
     });
     const n = routines.length;
@@ -1546,11 +1717,13 @@
   // workout state. The active workout only gets built if/when the user
   // explicitly taps "Iniciar entrenamiento" below.
   let currentPreviewRoutineId = null;
+  let editingWeightIndex = null; // which exercise row (in the open preview) is mid-edit, if any
 
   function openRoutineDetail(routineId){
     const routine = routines.find(r => r.id === routineId);
     if(!routine) return;
     currentPreviewRoutineId = routineId;
+    editingWeightIndex = null;
 
     document.getElementById('routineDetailName').textContent = routine.name;
 
@@ -1562,23 +1735,69 @@
     document.getElementById('routineDetailSubtitle').textContent =
       groups.length ? groups.join(' · ') : (routine.exerciseCount + ' ejercicios');
 
+    renderRoutineDetailBody();
+    document.getElementById('routineDetailScreen').classList.add('open');
+    feather.replace();
+  }
+
+  // Re-render only the exercise list — used both on open and after a weight
+  // edit is confirmed/cancelled, so we never have to rebuild the whole screen.
+  function renderRoutineDetailBody(){
+    const routine = routines.find(r => r.id === currentPreviewRoutineId);
+    if(!routine) return;
+
     const body = document.getElementById('routineDetailBody');
     body.innerHTML = (routine.exercises || []).map((ex, i) => {
       const hasWeight = ex.weight !== undefined && ex.weight !== null;
-      return (
-        '<div class="routine-ex-row">' +
-          '<div class="routine-ex-index">' + (i + 1) + '</div>' +
-          '<div class="routine-ex-info">' +
-            '<div class="routine-ex-name">' + ex.name + '</div>' +
-            '<div class="routine-ex-meta">' + ex.sets + ' series' + (ex.repsRange ? ' · ' + ex.repsRange + ' reps' : '') + '</div>' +
-          '</div>' +
-          (hasWeight ? '<div class="routine-ex-weight">' + formatWeightEs(ex.weight) + ' kg</div>' : '') +
-        '</div>'
-      );
+      const metaHtml =
+        '<div class="routine-ex-info">' +
+          '<div class="routine-ex-name">' + ex.name + '</div>' +
+          '<div class="routine-ex-meta">' + ex.sets + ' series' + (ex.repsRange ? ' · ' + ex.repsRange + ' reps' : '') + '</div>' +
+        '</div>';
+
+      let weightHtml;
+      if(i === editingWeightIndex){
+        weightHtml =
+          '<div class="routine-ex-weight-edit">' +
+            '<input type="number" inputmode="decimal" step="0.5" min="0" id="weightEditInput" value="' + (hasWeight ? ex.weight : '') + '" />' +
+            '<button class="routine-ex-weight-confirm" onclick="confirmWeightEdit(' + i + ')"><i data-feather="check"></i></button>' +
+          '</div>';
+      } else {
+        weightHtml = hasWeight
+          ? '<button class="routine-ex-weight-btn" onclick="startEditWeight(' + i + ')">' + formatWeightEs(ex.weight) + ' kg</button>'
+          : '<button class="routine-ex-weight-btn unset" onclick="startEditWeight(' + i + ')">+ Añadir peso</button>';
+      }
+
+      return '<div class="routine-ex-row"><div class="routine-ex-index">' + (i + 1) + '</div>' + metaHtml + weightHtml + '</div>';
     }).join('');
 
-    document.getElementById('routineDetailScreen').classList.add('open');
     feather.replace();
+    if(editingWeightIndex !== null){
+      const input = document.getElementById('weightEditInput');
+      if(input){ input.focus(); input.select(); }
+    }
+  }
+
+  function startEditWeight(index){
+    editingWeightIndex = index;
+    renderRoutineDetailBody();
+  }
+
+  // This is the "marca actual" — a reference weight the user maintains
+  // themselves. It's a plain field on the routine's own exercise data, and
+  // is completely separate from the Récords personales / PR system, which
+  // is always derived from workoutLogs and is never editable here.
+  function confirmWeightEdit(index){
+    const routine = routines.find(r => r.id === currentPreviewRoutineId);
+    if(!routine) return;
+    const input = document.getElementById('weightEditInput');
+    const raw = input ? input.value.trim() : '';
+    const parsed = parseFloat(raw);
+    routine.exercises[index].weight = (raw !== '' && !isNaN(parsed) && parsed >= 0) ? parsed : undefined;
+
+    editingWeightIndex = null;
+    renderRoutineDetailBody();
+    showSuccessToast('Marca actualizada');
   }
 
   function closeRoutineDetail(){
@@ -1604,6 +1823,8 @@
   // The only path into the active workout screen. Builds a fresh session
   // from this specific routine's exercises — Routine A and Routine B never
   // share or leak state, since `workout` is fully rebuilt here every time.
+  // Reads routine.exercises[i].weight directly, so any "marca actual" edit
+  // made just above is already reflected when the workout starts.
   function startWorkoutFromRoutine(routineId){
     const routine = routines.find(r => r.id === routineId);
     if(!routine || !routine.exercises || routine.exercises.length === 0) return;
@@ -1615,7 +1836,212 @@
     activeRoutineName = routine.name;
 
     closeRoutineDetail();
+    closeEditRoutineScreen();
     openWorkout();
+  }
+
+  // ================================================================
+  // EDITAR RUTINA — rename, add/remove/reorder exercises, edit sets/reps/weight.
+  // Works on a scratch copy (`editingRoutineExercises`) and only writes back
+  // into the shared `routines` array on "Guardar cambios", so cancelling
+  // (closing the screen) never mutates anything.
+  // ================================================================
+  let editingRoutineId = null;
+  let editingRoutineExercises = [];
+  let editCatalogOpen = false;
+
+  function openEditRoutineScreen(routineId){
+    const routine = routines.find(r => r.id === routineId);
+    if(!routine) return;
+    editingRoutineId = routineId;
+    editingRoutineExercises = (routine.exercises || []).map(ex => ({ ...ex }));
+    editCatalogOpen = false;
+
+    document.getElementById('editRoutineNameInput').value = routine.name;
+    document.getElementById('editRoutineCatalog').style.display = 'none';
+
+    renderEditRoutineExercises();
+    document.getElementById('editRoutineScreen').classList.add('open');
+    feather.replace();
+  }
+
+  function closeEditRoutineScreen(){
+    document.getElementById('editRoutineScreen').classList.remove('open');
+  }
+
+  function renderEditRoutineExercises(){
+    const container = document.getElementById('editRoutineExerciseList');
+    container.innerHTML = editingRoutineExercises.map((ex, i) => {
+      const isFirst = i === 0;
+      const isLast = i === editingRoutineExercises.length - 1;
+      return (
+        '<div class="edit-ex-row">' +
+          '<div class="edit-ex-top">' +
+            '<div class="edit-ex-name">' + ex.name + '</div>' +
+            '<button class="edit-ex-icon-btn" onclick="moveEditExercise(' + i + ',-1)" ' + (isFirst ? 'disabled' : '') + '><i data-feather="chevron-up"></i></button>' +
+            '<button class="edit-ex-icon-btn" onclick="moveEditExercise(' + i + ',1)" ' + (isLast ? 'disabled' : '') + '><i data-feather="chevron-down"></i></button>' +
+            '<button class="edit-ex-icon-btn danger" onclick="removeEditExercise(' + i + ')"><i data-feather="trash-2"></i></button>' +
+          '</div>' +
+          '<div class="edit-ex-fields">' +
+            '<div class="edit-ex-field">' +
+              '<div class="edit-ex-field-label">SERIES</div>' +
+              '<input type="number" min="1" value="' + ex.sets + '" onchange="updateEditExerciseField(' + i + ',\'sets\',this.value)" />' +
+            '</div>' +
+            '<div class="edit-ex-field">' +
+              '<div class="edit-ex-field-label">REPS</div>' +
+              '<input type="text" value="' + (ex.repsRange || '') + '" placeholder="8-12" onchange="updateEditExerciseField(' + i + ',\'repsRange\',this.value)" />' +
+            '</div>' +
+            '<div class="edit-ex-field">' +
+              '<div class="edit-ex-field-label">PESO (KG)</div>' +
+              '<input type="number" min="0" step="0.5" value="' + (ex.weight !== undefined && ex.weight !== null ? ex.weight : '') + '" placeholder="—" onchange="updateEditExerciseField(' + i + ',\'weight\',this.value)" />' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+    feather.replace();
+  }
+
+  function updateEditExerciseField(index, field, rawValue){
+    if(field === 'sets'){
+      const n = parseInt(rawValue, 10);
+      editingRoutineExercises[index].sets = (n > 0) ? n : 1;
+    } else if(field === 'repsRange'){
+      editingRoutineExercises[index].repsRange = rawValue.trim();
+    } else if(field === 'weight'){
+      const w = parseFloat(rawValue);
+      editingRoutineExercises[index].weight = (rawValue.trim() !== '' && !isNaN(w) && w >= 0) ? w : undefined;
+    }
+  }
+
+  function moveEditExercise(index, direction){
+    const target = index + direction;
+    if(target < 0 || target >= editingRoutineExercises.length) return;
+    const arr = editingRoutineExercises;
+    const tmp = arr[index];
+    arr[index] = arr[target];
+    arr[target] = tmp;
+    renderEditRoutineExercises();
+  }
+
+  function removeEditExercise(index){
+    editingRoutineExercises.splice(index, 1);
+    renderEditRoutineExercises();
+    renderEditRoutineCatalog(); // an exercise removed from the routine becomes available to re-add
+  }
+
+  function toggleEditCatalog(){
+    editCatalogOpen = !editCatalogOpen;
+    const el = document.getElementById('editRoutineCatalog');
+    el.style.display = editCatalogOpen ? 'block' : 'none';
+    if(editCatalogOpen) renderEditRoutineCatalog();
+  }
+
+  // Reuses the exact same catalog grid as "Crear mi rutina". A card shows as
+  // selected when its exercise is already in the routine; tapping toggles
+  // it in or out — one interaction model for adding, everywhere in the app.
+  function renderEditRoutineCatalog(){
+    const container = document.getElementById('editRoutineCatalog');
+    const currentNames = editingRoutineExercises.map(ex => ex.name);
+    container.innerHTML = MUSCLE_GROUPS.map(group => {
+      const cards = group.exercises.map(ex => {
+        const isSelected = currentNames.indexOf(ex.name) !== -1;
+        return (
+          '<div class="exercise-card' + (isSelected ? ' selected' : '') + '" onclick="toggleEditCatalogExercise(\'' + ex.id + '\')">' +
+            '<div class="exercise-card-icon"><i data-feather="' + group.icon + '"></i></div>' +
+            '<div class="exercise-card-name">' + ex.name + '</div>' +
+            '<div class="exercise-check">' + (isSelected ? '<i data-feather="check"></i>' : '') + '</div>' +
+          '</div>'
+        );
+      }).join('');
+      return '<div class="muscle-section"><div class="muscle-section-title">' + group.label + '</div><div class="exercise-grid">' + cards + '</div></div>';
+    }).join('');
+    feather.replace();
+  }
+
+  function toggleEditCatalogExercise(exerciseId){
+    const name = EXERCISE_NAME_BY_ID[exerciseId];
+    const existingIndex = editingRoutineExercises.findIndex(ex => ex.name === name);
+    if(existingIndex !== -1){
+      editingRoutineExercises.splice(existingIndex, 1);
+    } else {
+      editingRoutineExercises.push({ name, sets: 3, repsRange: '8-12' });
+    }
+    renderEditRoutineExercises();
+    renderEditRoutineCatalog();
+  }
+
+  function saveRoutineEdits(){
+    const routine = routines.find(r => r.id === editingRoutineId);
+    if(!routine) return;
+    const typedName = document.getElementById('editRoutineNameInput').value.trim();
+
+    routine.name = typedName || routine.name;
+    routine.exercises = editingRoutineExercises.map(ex => ({ ...ex }));
+    routine.exerciseCount = routine.exercises.length;
+    routine.estimatedMinutes = Math.max(20, Math.round(routine.exercises.length * 9));
+
+    closeEditRoutineScreen();
+    renderRoutinesList();
+    if(currentPreviewRoutineId === routine.id) openRoutineDetail(routine.id);
+    showSuccessToast('Rutina actualizada');
+  }
+
+  // ================================================================
+  // ROUTINE CARD MENU ("⋮") — edit or delete a routine straight from the list
+  // ================================================================
+  let routineMenuTargetId = null;
+
+  function openRoutineMenu(routineId){
+    const routine = routines.find(r => r.id === routineId);
+    if(!routine) return;
+    routineMenuTargetId = routineId;
+    document.getElementById('routineMenuTitle').textContent = routine.name;
+    document.getElementById('routineMenuBackdrop').classList.add('open');
+    document.getElementById('routineMenuSheet').classList.add('open');
+  }
+
+  function closeRoutineMenu(){
+    document.getElementById('routineMenuBackdrop').classList.remove('open');
+    document.getElementById('routineMenuSheet').classList.remove('open');
+  }
+
+  function editRoutineFromMenu(){
+    const id = routineMenuTargetId;
+    closeRoutineMenu();
+    openEditRoutineScreen(id);
+  }
+
+  function deleteRoutineFromMenu(){
+    const id = routineMenuTargetId;
+    closeRoutineMenu();
+    openDeleteConfirm(id);
+  }
+
+  // ---------- Delete routine (with confirmation) ----------
+  let deleteConfirmTargetId = null;
+
+  function openDeleteConfirm(routineId){
+    const routine = routines.find(r => r.id === routineId);
+    if(!routine) return;
+    deleteConfirmTargetId = routineId;
+    document.getElementById('deleteConfirmRoutineName').textContent = routine.name;
+    document.getElementById('deleteConfirmBackdrop').classList.add('open');
+    document.getElementById('deleteConfirmDialog').classList.add('open');
+  }
+
+  function closeDeleteConfirm(){
+    document.getElementById('deleteConfirmBackdrop').classList.remove('open');
+    document.getElementById('deleteConfirmDialog').classList.remove('open');
+  }
+
+  function confirmDeleteRoutine(){
+    const id = deleteConfirmTargetId;
+    routines = routines.filter(r => r.id !== id);
+    closeDeleteConfirm();
+    if(currentPreviewRoutineId === id) closeRoutineDetail();
+    renderRoutinesList();
+    showSuccessToast('Rutina eliminada');
   }
 
   // ---------- Action sheet ----------
