@@ -574,27 +574,36 @@
   .set-check.done{background:var(--success);border-color:var(--success);}
   .set-check svg{width:15px;height:15px;color:#0B0B0F;}
   /* ---------- Rest component: independent from the exercise card above it.
-     The countdown is the dominant element; controls are secondary utility
-     buttons. Red is reserved for "Reanudar" — the one action that brings
-     the user back into training — everything else stays neutral. ---------- */
+     The countdown lives inside a circular ring — only the border is red,
+     the fill stays the same surface tone as the rest of the component — so
+     it reads as one deliberate, premium object rather than a plain banner.
+     Controls are secondary utility buttons below it. ---------- */
   .rest-banner{
     display:flex;flex-direction:column;align-items:center;text-align:center;
-    background:var(--surface);border:1px solid var(--border-light);border-radius:24px;
-    padding:22px 20px;margin-top:20px;
+    background:var(--surface);border:1px solid var(--border-light);border-radius:22px;
+    padding:18px 20px;margin-top:18px;
   }
   .rest-title{
-    font-family:var(--font-body);font-weight:700;font-size:12px;letter-spacing:1.2px;
+    font-family:var(--font-body);font-weight:700;font-size:11.5px;letter-spacing:1.2px;
     color:var(--text-secondary);text-transform:uppercase;
   }
-  .rest-time{font-family:var(--font-display);font-weight:700;font-size:46px;color:var(--text-primary);letter-spacing:-0.5px;margin-top:8px;}
-  .rest-status{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-tertiary);margin-top:6px;}
-  .rest-controls{display:flex;gap:10px;margin-top:18px;width:100%;}
-  .rest-btn{
-    flex:1;height:46px;border-radius:14px;border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:6px;
-    font-family:var(--font-body);font-weight:600;font-size:14px;
+  .rest-circle{
+    width:112px;height:112px;border-radius:50%;
+    border:3px solid var(--accent-bright);
+    background:var(--surface);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    margin-top:12px;
+    box-shadow:0 0 0 5px rgba(185,28,53,0.08), 0 10px 20px -10px rgba(0,0,0,0.55);
   }
-  .rest-btn svg{width:14px;height:14px;}
+  .rest-time{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--text-primary);letter-spacing:-0.3px;}
+  .rest-status{font-family:var(--font-body);font-weight:600;font-size:10.5px;color:var(--text-tertiary);margin-top:3px;}
+  .rest-controls{display:flex;gap:8px;margin-top:16px;width:100%;}
+  .rest-btn{
+    flex:1;height:42px;border-radius:13px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    font-family:var(--font-body);font-weight:600;font-size:13px;
+  }
+  .rest-btn svg{width:13px;height:13px;}
   .rest-btn-secondary{background:var(--surface-high);color:var(--text-primary);}
   .rest-btn-ghost{background:transparent;border:1px solid var(--border-light);color:var(--text-secondary);}
   .rest-btn-primary{
@@ -1230,8 +1239,10 @@
 
     <div class="rest-banner" id="restBanner" style="display:none">
       <div class="rest-title">Descanso</div>
-      <div class="rest-time" id="restTime">01:30</div>
-      <div class="rest-status" id="restStatus" style="display:none">Pausado</div>
+      <div class="rest-circle">
+        <div class="rest-time" id="restTime">01:30</div>
+        <div class="rest-status" id="restStatus" style="display:none">Pausado</div>
+      </div>
       <div class="rest-controls" id="restControls"></div>
     </div>
 
