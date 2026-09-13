@@ -573,16 +573,33 @@
   }
   .set-check.done{background:var(--success);border-color:var(--success);}
   .set-check svg{width:15px;height:15px;color:#0B0B0F;}
+  /* ---------- Rest component: independent from the exercise card above it.
+     The countdown is the dominant element; controls are secondary utility
+     buttons. Red is reserved for "Reanudar" — the one action that brings
+     the user back into training — everything else stays neutral. ---------- */
   .rest-banner{
-    display:flex;align-items:center;justify-content:space-between;
-    background:var(--surface);border:1px solid var(--border-light);border-radius:22px;
-    padding:20px;margin-top:20px;
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    background:var(--surface);border:1px solid var(--border-light);border-radius:24px;
+    padding:22px 20px;margin-top:20px;
   }
-  .rest-label{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:4px;}
-  .rest-time{font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--text-primary);letter-spacing:-0.5px;}
-  .skip-btn{
-    background:var(--surface-high);border:none;border-radius:14px;padding:10px 16px;
-    font-family:var(--font-body);font-weight:500;font-size:14.5px;color:var(--text-secondary);cursor:pointer;
+  .rest-title{
+    font-family:var(--font-body);font-weight:700;font-size:12px;letter-spacing:1.2px;
+    color:var(--text-secondary);text-transform:uppercase;
+  }
+  .rest-time{font-family:var(--font-display);font-weight:700;font-size:46px;color:var(--text-primary);letter-spacing:-0.5px;margin-top:8px;}
+  .rest-status{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-tertiary);margin-top:6px;}
+  .rest-controls{display:flex;gap:10px;margin-top:18px;width:100%;}
+  .rest-btn{
+    flex:1;height:46px;border-radius:14px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    font-family:var(--font-body);font-weight:600;font-size:14px;
+  }
+  .rest-btn svg{width:14px;height:14px;}
+  .rest-btn-secondary{background:var(--surface-high);color:var(--text-primary);}
+  .rest-btn-ghost{background:transparent;border:1px solid var(--border-light);color:var(--text-secondary);}
+  .rest-btn-primary{
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));color:#fff;
+    box-shadow:0 8px 18px -6px rgba(185,28,53,0.45);
   }
   .workout-footer{
     border-top:1px solid var(--border);padding:16px 0 calc(env(safe-area-inset-bottom, 14px) + 20px) 0;margin-top:auto;
@@ -1212,11 +1229,10 @@
     </div>
 
     <div class="rest-banner" id="restBanner" style="display:none">
-      <div>
-        <div class="rest-label">Descanso</div>
-        <div class="rest-time" id="restTime">01:30</div>
-      </div>
-      <button class="skip-btn" onclick="skipRest()">Saltar</button>
+      <div class="rest-title">Descanso</div>
+      <div class="rest-time" id="restTime">01:30</div>
+      <div class="rest-status" id="restStatus" style="display:none">Pausado</div>
+      <div class="rest-controls" id="restControls"></div>
     </div>
 
     <div class="workout-footer">
@@ -1517,6 +1533,7 @@
   let exIndex = 0;
   let restRemaining = null;
   let restInterval = null;
+  let restPaused = false;
   let activeRoutineName = 'Push';
   let workoutStartedAt = null;
 
@@ -1530,6 +1547,7 @@
   function closeWorkout(){
     document.getElementById('workoutOverlay').classList.remove('open');
     clearInterval(restInterval);
+    restPaused = false;
   }
 
   function activeSetIndex(ex){
@@ -1657,6 +1675,7 @@
       // move to next exercise or finish
       clearInterval(restInterval);
       restRemaining = null;
+      restPaused = false;
       document.getElementById('restBanner').style.display = 'none';
       if(exIndex === workout.length - 1){
         logCompletedWorkout();
@@ -1673,31 +1692,93 @@
     renderWorkout();
   }
 
+  // ---------- Rest component: independent state, driven for real ----------
+  // Uses the routine's own rest time if one exists (ex.restSeconds), falling
+  // back to REST_SECONDS. No settings UI is introduced — just a check for a
+  // value that may already be there or added later per exercise/routine.
   function startRest(){
     clearInterval(restInterval);
-    restRemaining = REST_SECONDS;
-    const banner = document.getElementById('restBanner');
-    banner.style.display = 'flex';
-    updateRestDisplay();
+    const ex = workout[exIndex];
+    restRemaining = (ex && ex.restSeconds) || REST_SECONDS;
+    restPaused = false;
+    document.getElementById('restBanner').style.display = 'flex';
+    renderRestBanner();
+    runRestInterval();
+  }
+
+  // Interval only exists while actively counting down — pausing clears it
+  // outright rather than tracking a "paused" flag inside the tick, so there's
+  // no wasted work and resuming restarts cleanly from the exact remaining time.
+  function runRestInterval(){
+    clearInterval(restInterval);
     restInterval = setInterval(() => {
       restRemaining--;
       if(restRemaining <= 0){
-        clearInterval(restInterval);
-        banner.style.display = 'none';
+        endRest();
         return;
       }
-      updateRestDisplay();
+      renderRestBanner();
     }, 1000);
   }
-  function updateRestDisplay(){
-    const m = Math.floor(restRemaining/60);
-    const s = restRemaining % 60;
-    document.getElementById('restTime').textContent =
-      String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-  function skipRest(){
+
+  function pauseRest(){
+    if(restRemaining === null) return;
+    restPaused = true;
     clearInterval(restInterval);
+    renderRestBanner();
+  }
+
+  function resumeRest(){
+    if(restRemaining === null) return;
+    restPaused = false;
+    runRestInterval();
+    renderRestBanner();
+  }
+
+  function addRestTime(seconds){
+    if(restRemaining === null) return;
+    restRemaining += seconds;
+    renderRestBanner();
+  }
+
+  function skipRest(){
+    endRest();
+  }
+
+  function endRest(){
+    clearInterval(restInterval);
+    restRemaining = null;
+    restPaused = false;
     document.getElementById('restBanner').style.display = 'none';
+  }
+
+  function formatRestTime(seconds){
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  // Re-renders the countdown, the "Pausado" status line, and swaps the
+  // control row between the running set (Pausar / +30s / Saltar) and the
+  // paused set (Reanudar only) — matching the two states of the component.
+  function renderRestBanner(){
+    if(restRemaining === null) return;
+    document.getElementById('restTime').textContent = formatRestTime(restRemaining);
+
+    const statusEl = document.getElementById('restStatus');
+    statusEl.style.display = restPaused ? 'block' : 'none';
+
+    const controls = document.getElementById('restControls');
+    if(restPaused){
+      controls.innerHTML =
+        '<button class="rest-btn rest-btn-primary" onclick="resumeRest()"><i data-feather="play"></i> Reanudar</button>';
+    } else {
+      controls.innerHTML =
+        '<button class="rest-btn rest-btn-secondary" onclick="pauseRest()"><i data-feather="pause"></i> Pausar</button>' +
+        '<button class="rest-btn rest-btn-ghost" onclick="addRestTime(30)">+30s</button>' +
+        '<button class="rest-btn rest-btn-ghost" onclick="skipRest()">Saltar</button>';
+    }
+    feather.replace();
   }
 
   // ---------- Weekly activity chart: tap a bar to see that day's detail ----------
